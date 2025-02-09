@@ -30,6 +30,7 @@ My personalized Neovim configuration. This repository is actively maintained and
 - [nvim-dap](https://github.com/mfussenegger/nvim-dap) - Debugging
 - [live-preview.nvim](https://github.com/link/to/live-preview) - Markdown/HTML preview
 - [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) - Fuzzy finder
+- [leap.nvim](https://github.com/ggandor/leap.nvim) - Leap
 
 ## Installation
 
