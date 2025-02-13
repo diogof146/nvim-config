@@ -15,7 +15,7 @@ function M.setup()
 		-- Main color scheme
 		teal = "#006F6F", -- Darker teal for better contrast
 		teal_bright = "#00CED1", -- Bright teal (cyan)
-		teal_light = "#40E0D0", -- Turquoise (adjusted slightly for better visibility)
+		teal_light = "#40E0D0", -- Turquoise
 		cyan = "#00FFFF", -- Pure cyan
 		cyan_light = "#C0FFFF", -- Darker light cyan for better contrast
 		cyan_dark = "#008B8B", -- Dark cyan (unchanged)
@@ -31,10 +31,10 @@ function M.setup()
 		red = "#FF6B6B", -- Error color
 
 		-- Background colors
-		bg = "#101010", -- Darker background for higher contrast
-		bg_dark = "#121212", -- Teal-tinted dark background
+		bg = "NONE", -- Transparency for terminal background
+		bg_dark = "NONE", -- Transparency
 		bg_warning = "#102147", -- Slightly darkened blue
-		bg_error = "#2b1211", -- Error background (unchanged)
+		bg_error = "#2b1211", -- Error background
 
 		-- Foreground colors
 		fg = "#B0B0B0", -- Reduced white (lighter grey with teal hint)
@@ -49,11 +49,11 @@ function M.setup()
 		-- Editor UI elements
 		ColorColumn = { bg = colors.teal }, -- Highlighted column for guides
 		Conceal = { fg = colors.teal_bright }, -- Hidden text (conceal feature)
-		CurSearch = { fg = colors.black, bg = colors.cyan_light, bold = true }, -- Current search highlight
+		CurSearch = { fg = colors.black, bg = colors.cyan_light, bold = true }, -- Search highlight
 		Cursor = { fg = colors.black, bg = colors.cyan }, -- Cursor styling
 		CursorIM = { bg = colors.teal_bright }, -- Cursor in Insert Mode
 		CursorColumn = { bg = colors.grey_dark }, -- Highlighted column where the cursor is
-		CursorLine = { bg = colors.grey_dark }, -- Highlight the current line without altering text color
+		CursorLine = { bg = "#12272b" }, -- Highlight the current line
 		Directory = { fg = colors.turquoise }, -- Color for directories
 
 		-- Diff highlighting
@@ -72,7 +72,7 @@ function M.setup()
 
 		-- Search and selection
 		IncSearch = { fg = colors.black, bg = colors.cyan, bold = true }, -- Incremental search
-		LineNr = { fg = colors.teal, bg = colors.bg }, -- Line numbers
+		LineNr = { fg = colors.teal }, -- Line numbers (removed bg for transparency)
 		CursorLineNr = { fg = colors.teal_bright, bold = true }, -- Current line number
 		MatchParen = { fg = colors.white, bg = colors.grey, bold = true }, -- Matching parentheses
 
@@ -80,7 +80,7 @@ function M.setup()
 		ModeMsg = { fg = colors.teal_bright, bold = true }, -- Mode message (e.g., -- INSERT --)
 		MoreMsg = { fg = colors.teal_bright, bold = true }, -- More messages (e.g., pagination)
 		NonText = { fg = colors.steel }, -- Non-text characters
-		Normal = { fg = colors.fg, bg = colors.bg }, -- Normal text
+		Normal = { fg = colors.fg }, -- Normal text (removed bg for transparency)
 
 		-- Floating windows
 		NormalFloat = { fg = colors.fg, bg = colors.bg_dark }, -- Floating window text
@@ -103,11 +103,11 @@ function M.setup()
 		SpellRare = { fg = colors.red, underline = true }, -- Rare word usage
 
 		-- Status line and tabs
-		StatusLine = { fg = colors.teal_bright, bg = colors.bg }, -- Active status line
-		StatusLineNC = { fg = colors.fg_dark, bg = colors.bg }, -- Inactive status line
-		TabLine = { fg = colors.fg_dark, bg = colors.bg_dark }, -- Tab line
+		StatusLine = { fg = colors.teal_bright }, -- Active status line (removed bg for transparency)
+		StatusLineNC = { fg = colors.fg_dark }, -- Inactive status line (removed bg for transparency)
+		TabLine = { fg = colors.fg_dark }, -- Tab line (removed bg for transparency)
 		TabLineFill = { fg = colors.fg_dark }, -- Fill in tab line
-		TabLineSel = { fg = colors.teal_bright, bg = colors.bg_dark }, -- Selected tab
+		TabLineSel = { fg = colors.teal_bright }, -- Selected tab (removed bg for transparency)
 
 		-- Various UI elements
 		Title = { fg = colors.mint }, -- Title text
@@ -133,7 +133,7 @@ function M.setup()
 		Special = { fg = colors.mint }, -- Special identifiers
 		Underlined = { fg = colors.teal_bright, underline = true }, -- Underlined text
 		Error = { fg = colors.red, underline = true }, -- Errors
-		Todo = { fg = colors.cyan, bg = colors.bg_dark, bold = true }, -- TODO comments
+		Todo = { fg = colors.cyan, bold = true }, -- TODO comments (removed bg for transparency)
 		SpecialComment = { fg = colors.steel }, -- Special comments
 
 		-- Git integration
