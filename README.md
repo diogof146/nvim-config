@@ -31,6 +31,7 @@ My personalized Neovim configuration. This repository is actively maintained and
 - [live-preview.nvim](https://github.com/link/to/live-preview) - Markdown/HTML preview
 - [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) - Fuzzy finder
 - [leap.nvim](https://github.com/ggandor/leap.nvim) - Leap
+- [nvim-surround](https://github.com/kylechui/nvim-surround) - Surround selection
 
 ## Installation
 
