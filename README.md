@@ -23,7 +23,7 @@ My personalized Neovim configuration. This repository is actively maintained and
 - [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) - Status line
 - [neo-tree.nvim](https://github.com/nvim-neo-tree/neo-tree.nvim) - File explorer
 - [bufferline.nvim](https://github.com/akinsho/bufferline.nvim) - Buffer line
-- [tiny-glimmer.nvim](https://github.com/link/to/tiny-glimmer) - Glow on yank operations 
+- [tiny-glimmer.nvim](https://github.com/link/to/tiny-glimmer) - Visual cue on yank/paste/undo/redo/search 
 - [toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim) - Terminal
 - [nvim-autopairs](https://github.com/windwp/nvim-autopairs) - Auto-close pairs
 - [Comment.nvim](https://github.com/numToStr/Comment.nvim) - Code commenting
