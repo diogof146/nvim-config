@@ -23,7 +23,6 @@ vim.opt.rtp:prepend(lazypath)
 
 
 
-
 -- Key Mappings Configuration
 
 -- Define the "leader key" as space
@@ -60,6 +59,13 @@ vim.keymap.set({ "n", "v" }, "D", '"_D', { noremap = true, desc = "Delete to end
 vim.keymap.set({ "n", "v" }, "x", '"_x', { noremap = true, desc = "Delete character without yanking" })
 
 
+
+-- Disabling comment auto insert
+vim.api.nvim_create_autocmd("BufEnter", {
+    callback = function()
+        vim.opt.formatoptions:remove("o")
+    end
+})
 
 
 -- Core Editor Settings
