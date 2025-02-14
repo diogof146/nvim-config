@@ -57,7 +57,9 @@ vim.keymap.set("n", "G", "G$", { noremap = true, desc = "Go to last line and end
 vim.keymap.set({ "n", "v" }, "d", '"_d', { noremap = true, desc = "Delete without yanking" })
 vim.keymap.set({ "n", "v" }, "D", '"_D', { noremap = true, desc = "Delete to end without yanking" })
 vim.keymap.set({ "n", "v" }, "x", '"_x', { noremap = true, desc = "Delete character without yanking" })
-
+vim.keymap.set("n", "S", '"_cc', { noremap = true, desc = "Substitute line without yanking" })
+vim.keymap.set("n", "C", '"_C', { noremap = true, desc = "Change to end without yanking" })
+vim.keymap.set("n", "s", '"_s', { noremap = true, desc = "Substitute character without yanking" })
 
 
 -- Disabling comment auto insert
