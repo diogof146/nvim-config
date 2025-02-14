@@ -77,8 +77,8 @@ return {
 			-- Configuration for floating terminal windows
 			float_opts = {
 				border = "curved", -- Curved border
-				width = 180, -- Width of the floating window
-				height = 45, -- Height of the floating window
+				width = 160, -- Width of the floating window
+				height = 40, -- Height of the floating window
 				winblend = 10, -- Transparency of the floating window
 			},
 
