@@ -52,6 +52,9 @@ vim.keymap.set("n", "q", "b", { noremap = true })
 vim.keymap.set("n", "gg", "gg0", { noremap = true, desc = "Go to first line and start" })
 vim.keymap.set("n", "G", "G$", { noremap = true, desc = "Go to last line and end" })
 
+-- Mapping global word replacement with confirmation
+vim.keymap.set('n', '<leader>r', ':%s/\\<<C-r><C-w>\\>//gc<left><left><left>', { noremap = true })
+
 -- Make delete operations not affect the clipboard
 -- The "void register" (_) is used to discard deleted text
 vim.keymap.set({ "n", "v" }, "d", '"_d', { noremap = true, desc = "Delete without yanking" })
