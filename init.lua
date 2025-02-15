@@ -28,7 +28,7 @@ vim.opt.rtp:prepend(lazypath)
 -- Define the "leader key" as space
 -- The leader key is a customizable prefix key for user-defined shortcuts
 vim.g.mapleader = " " -- Global leader key
-vim.g.maplocalleader = " " -- Local leader key (used in local scopes)
+vim.g.maplocalleader = "," -- Local leader key
 
 -- Key mappings for indentation in visual mode
 -- "<Tab>": Indents the selected text and keeps the selection active
