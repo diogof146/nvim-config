@@ -32,6 +32,7 @@ My personalized Neovim configuration. This repository is actively maintained and
 - [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) - Fuzzy finder
 - [leap.nvim](https://github.com/ggandor/leap.nvim) - Leap
 - [nvim-surround](https://github.com/kylechui/nvim-surround) - Surround selection
+- [nvim-jdtls](https://github.com/mfussenegger/nvim-jdtls) - Java LSP
 
 ## Installation
 

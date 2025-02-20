@@ -37,6 +37,7 @@ return {
 				"lua_ls", -- Lua LSP
 				"ruff", -- Python linter (as LSP server)
 				"ts_ls", -- TypeScript/JavaScript LSP
+				"jdtls", -- Java
 			},
 			-- Automatically install missing LSP servers
 			automatic_installation = true, -- Ensures missing LSP servers are installed automatically
@@ -44,6 +45,18 @@ return {
 
 		-- Import core LSP configuration
 		local lspconfig = require("lspconfig")
+
+		-- Disable diagnostics by default
+		vim.diagnostic.disable()
+
+		-- Add keybind to toggle diagnostics
+		vim.keymap.set("n", "<localleader>dg", function()
+			if vim.diagnostic.is_disabled() then
+				vim.diagnostic.enable()
+			else
+				vim.diagnostic.disable()
+			end
+		end, { desc = "Toggle diagnostics" })
 
 		-- Import cmp-nvim-lsp to extend LSP functionality with autocompletion capabilities
 		local capabilities = require("cmp_nvim_lsp").default_capabilities()
