@@ -48,6 +48,27 @@ return {
 				local jdtls_pkg = mason_registry.get_package("jdtls")
 				local jdtls_path = jdtls_pkg:get_install_path()
 
+				-- Detect available JDK installations
+				-- Helper function to check if a path exists
+				local function path_exists(path)
+					return vim.fn.isdirectory(path) == 1
+				end
+
+				-- Common Homebrew JDK paths on macOS
+				local jdk_paths = {
+					["JavaSE-17"] = "/opt/homebrew/opt/openjdk@17",
+					["JavaSE-11"] = "/opt/homebrew/opt/openjdk@11",
+					["JavaSE-1.8"] = "/opt/homebrew/Cellar/openjdk@8/1.8.0+372", -- Updated path for JDK 8
+				}
+
+				-- Filter to only include existing JDK paths
+				local available_runtimes = {}
+				for name, path in pairs(jdk_paths) do
+					if path_exists(path) then
+						table.insert(available_runtimes, { name = name, path = path })
+					end
+				end
+
 				-- JDTLS configuration for Java projects
 				local config = {
 					-- Command that starts the language server
@@ -141,21 +162,8 @@ return {
 							configuration = {
 								-- Auto-download Maven/Gradle sources
 								updateBuildConfiguration = "interactive",
-								-- Configure JDK for this project (change to match your JDK version)
-								runtimes = {
-									{
-										name = "JavaSE-17",
-										path = vim.fn.expand("~/.sdkman/candidates/java/17.0.7-tem"), -- JDK path
-									},
-									{
-										name = "JavaSE-11",
-										path = vim.fn.expand("~/.sdkman/candidates/java/11.0.20-tem"), -- JDK path
-									},
-									{
-										name = "JavaSE-1.8",
-										path = vim.fn.expand("~/.sdkman/candidates/java/8.0.392-amzn"), -- JDK path
-									},
-								},
+								-- Configure JDK for this project (dynamically based on detected JDKs)
+								runtimes = available_runtimes,
 							},
 							-- Better references
 							references = {
