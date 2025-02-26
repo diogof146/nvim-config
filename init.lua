@@ -52,6 +52,12 @@ vim.keymap.set("n", "q", "b", { noremap = true })
 vim.keymap.set("n", "gg", "gg0", { noremap = true, desc = "Go to first line and start" })
 vim.keymap.set("n", "G", "G$", { noremap = true, desc = "Go to last line and end" })
 
+-- Map <Leader>db to open the dashboard
+vim.keymap.set("n", "<Leader>db", ":Dashboard<CR>", { noremap = true, silent = true })
+-- Map <Leader>b to go to the previous buffer (:bp)
+vim.keymap.set("n", "<Leader>b", ":bp<CR>", { noremap = true, silent = true })
+
+
 -- Mapping global word replacement with confirmation
 vim.keymap.set('n', '<leader>r', ':%s/\\<<C-r><C-w>\\>//gc<left><left><left>', { noremap = true })
 
