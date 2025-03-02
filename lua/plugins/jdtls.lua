@@ -54,11 +54,9 @@ return {
 					return vim.fn.isdirectory(path) == 1
 				end
 
-				-- Common Homebrew JDK paths on macOS
+				-- Homebrew JDK paths
 				local jdk_paths = {
-					["JavaSE-17"] = "/opt/homebrew/opt/openjdk@17",
-					["JavaSE-11"] = "/opt/homebrew/opt/openjdk@11",
-					["JavaSE-1.8"] = "/opt/homebrew/Cellar/openjdk@8/1.8.0+372", -- Updated path for JDK 8
+					["JavaSE-23"] = "/opt/homebrew/opt/openjdk@23",
 				}
 
 				-- Filter to only include existing JDK paths
