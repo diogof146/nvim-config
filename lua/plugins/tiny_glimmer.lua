@@ -15,10 +15,10 @@ return {
 				auto_map = true,
         -- Search operation settings
         search = {
-            enabled = true,
+            enabled = false,
             default_animation = "bounce",
-            next_mapping = "nzzzv",
-            prev_mapping = "Nzzzv",
+            next_mapping = 'nzzzv', 
+            prev_mapping = 'Nzzzv', 
         },
 				-- Paste operation settings
 				paste = {
