@@ -33,6 +33,7 @@ My personalized Neovim configuration. This repository is actively maintained and
 - [nvim-surround](https://github.com/kylechui/nvim-surround) - Surround selection
 - [nvim-jdtls](https://github.com/mfussenegger/nvim-jdtls) - Java LSP
 - [VimTeX](https://github.com/lervag/vimtex) - LaTeX syntax 
+- [mini.move](https://github.com/echasnovski/mini.move) - line/selection moving
 
 ## Installation
 
