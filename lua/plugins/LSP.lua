@@ -46,15 +46,41 @@ return {
 		-- Import core LSP configuration
 		local lspconfig = require("lspconfig")
 
-		-- Disable diagnostics by default
-		vim.diagnostic.disable()
+		-- Create a global variable to track diagnostics state
+		if vim.g.diagnostics_visible == nil then
+			vim.g.diagnostics_visible = false
+		end
+
+		-- Disable diagnostics by default (on startup)
+		vim.diagnostic.config({
+			virtual_text = false,
+			signs = false,
+			underline = false,
+			update_in_insert = false,
+			severity_sort = false,
+		})
 
 		-- Add keybind to toggle diagnostics
 		vim.keymap.set("n", "<localleader>dg", function()
-			if vim.diagnostic.is_disabled() then
-				vim.diagnostic.enable()
+			vim.g.diagnostics_visible = not vim.g.diagnostics_visible
+			if vim.g.diagnostics_visible then
+				-- Enable all diagnostic displays
+				vim.diagnostic.config({
+					virtual_text = true,
+					signs = true,
+					underline = true,
+					update_in_insert = false,
+					severity_sort = false,
+				})
 			else
-				vim.diagnostic.disable()
+				-- Disable all diagnostic displays
+				vim.diagnostic.config({
+					virtual_text = false,
+					signs = false,
+					underline = false,
+					update_in_insert = false,
+					severity_sort = false,
+				})
 			end
 		end, { desc = "Toggle diagnostics" })
 
