@@ -34,6 +34,7 @@ My personalized Neovim configuration. This repository is actively maintained and
 - [nvim-jdtls](https://github.com/mfussenegger/nvim-jdtls) - Java LSP
 - [VimTeX](https://github.com/lervag/vimtex) - LaTeX syntax 
 - [mini.move](https://github.com/echasnovski/mini.move) - line/selection moving
+- [garbage-day.nvim](https://github.com/Zeioth/garbage-day.nvim) - Garbage collector for LSP
 
 ## Installation
 
