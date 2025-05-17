@@ -1,7 +1,7 @@
 -- Terminal Integration for Neovim
 
 return {
-	"akinsho/toggleterm.nvim", -- Plugin repository (GitHub: akinsho/toggleterm.nvim)
+	"akinsho/toggleterm.nvim",
 	version = "*", -- Use the latest available version
 	config = function()
 		-- Core state management
@@ -16,6 +16,13 @@ return {
 				has_pom = vim.tbl_contains(files, vim.fn.getcwd() .. "/pom.xml"), -- Checks for pom.xml (Maven project)
 				has_gradle = vim.tbl_contains(files, vim.fn.getcwd() .. "/build.gradle"), -- Checks for build.gradle (Gradle project)
 			}
+		end
+
+		-- Extracts package name from Java file content
+		local function extract_java_package(content)
+			-- Look for package declaration in the content
+			local package_match = string.match(content, "package%s+([%w%.]+)%s*;")
+			return package_match
 		end
 
 		-- Generates language-specific run commands based on the file type and content
@@ -42,8 +49,27 @@ return {
 						return "mvn exec:java"
 					else
 						local class_name = vim.fn.fnamemodify(filename, ":t:r") -- Get the Java class name
-						return vim.bo.modified and string.format([[echo '%s' | java -]], content)
-							or string.format("java %s", filename)
+						local package_name = extract_java_package(content)
+
+						if package_name then
+							-- Handle Java files with package declarations
+							if vim.bo.modified then
+								-- For unsaved content with package declaration, inform the user
+								vim.notify("Cannot run unsaved Java file with package declaration", vim.log.levels.WARN)
+								return nil
+							else
+								-- For saved file with package, find proper classpath and run
+								local file_dir = vim.fn.fnamemodify(filename, ":h") -- Get directory of the file
+								local package_path = package_name:gsub("%.", "/")
+								local root_dir = file_dir:gsub("/" .. package_path .. "$", "")
+
+								return string.format("cd %s && java -cp . %s.%s", root_dir, package_name, class_name)
+							end
+						else
+							-- No package declaration, run as before
+							return vim.bo.modified and string.format([[echo '%s' | java -]], content)
+								or string.format("java %s", filename)
+						end
 					end
 				end,
 

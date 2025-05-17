@@ -87,7 +87,7 @@ return {
 
 			-- Homebrew JDK paths
 			local jdk_paths = {
-				["JavaSE-23"] = "/opt/homebrew/opt/openjdk@23",
+        ["JavaSE-21"] = os.getenv("JAVA_HOME"),
 			}
 
 			-- Filter to only include existing JDK paths
