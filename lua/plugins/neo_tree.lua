@@ -53,7 +53,7 @@ return {
 				-- Configure window-specific settings and key mappings for filesystem view
 				window = {
 					mappings = {
-						["u"] = "navigate_up", -- Map 'u' to navigate up one directory level
+						["b"] = "navigate_up", -- Map 'u' to navigate up one directory level
 						["e"] = "set_root", -- Map 'e' to set the current directory as root
 					},
 				},
@@ -68,7 +68,7 @@ return {
 					nowait = true, -- Disable waiting for other mappings when a key is pressed
 				},
 				mappings = {
-					["u"] = "navigate_up", -- Global mapping for navigating up a directory
+					["b"] = "navigate_up", -- Global mapping for navigating up a directory
 					["e"] = "set_root", -- Global mapping for setting the root directory
 				},
 			},
