@@ -35,6 +35,7 @@ My personalized Neovim configuration. This repository is actively maintained and
 - [VimTeX](https://github.com/lervag/vimtex) - LaTeX syntax 
 - [mini.move](https://github.com/echasnovski/mini.move) - Line/Selection Moving
 - [neogen](https://github.com/danymat/neogen) - Annotation Toolkit
+- [java-project-creator](https://github.com/diogof146/java-project-creator.nvim) - Creating Java and Maven projects
 <!-- - [garbage-day.nvim](https://github.com/Zeioth/garbage-day.nvim) - Garbage collector for LSP-->
 
 ## Installation
