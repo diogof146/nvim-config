@@ -1,4 +1,4 @@
--- Terminal Integration for Neovim
+-- Terminal Integration for Neovim - Fixed Java Command Generation
 
 return {
 	"akinsho/toggleterm.nvim",
@@ -9,7 +9,7 @@ return {
 			last_position = nil, -- Tracks the cursor position in the terminal for restore after exiting
 		}
 
-		-- Function to detect project type by checking for specific configuration files (e.g., pom.xml, build.gradle)
+		-- Function to detect project type by checking for specific configuration files
 		local function detect_project_type()
 			local files = vim.fn.glob(vim.fn.getcwd() .. "/*", true, true) -- Scans the current directory
 			return {
@@ -25,74 +25,132 @@ return {
 			return package_match
 		end
 
+		-- Detect if file uses Swing, AWT, JavaFX, or JOptionPane
+		local function detect_java_ui_frameworks(content)
+			return {
+				has_swing = string.match(content, "import%s+javax%.swing") ~= nil,
+				has_awt = string.match(content, "import%s+java%.awt") ~= nil,
+				has_javafx = string.match(content, "import%s+javafx") ~= nil,
+				has_optionpane = string.match(content, "JOptionPane") ~= nil
+					or string.match(content, "import%s+javax%.swing%.JOptionPane") ~= nil,
+			}
+		end
+
 		-- Generates language-specific run commands based on the file type and content
-		-- If the file is unsaved, it runs the file content as a script; otherwise, it runs the file directly.
 		local function get_run_command(filename, filetype)
 			local project_info = detect_project_type() -- Detect if the project uses Maven or Gradle
 			local content = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n") -- Get the current buffer's content
-			content = content:gsub("'", "'\\''") -- Escape single quotes in content for shell safety
-			filename = vim.fn.shellescape(filename) -- Escape the filename for shell compatibility
+
+			-- We'll properly escape the filename differently for each command type
+			local plain_filename = vim.fn.expand("%:p") -- Get the full path without escaping yet
 
 			-- Define the run commands for different programming languages
 			local commands = {
 				python = function()
-					-- If the file has unsaved changes, run the content as a Python script; otherwise, run the file directly
-					return vim.bo.modified and string.format([[python3 -c '%s']], content)
-						or string.format("python3 %s", filename)
+					-- For Python, run unsaved content directly using python -c
+					if vim.bo.modified then
+						-- Get buffer content and escape it for shell
+						local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+						local escaped_content = table.concat(lines, "\\n"):gsub('"', '\\"')
+						-- Run python with the -c flag to execute content directly
+						return string.format('python3 -c "%s"', escaped_content)
+					else
+						local escaped_filename = vim.fn.shellescape(plain_filename)
+						return string.format("python3 %s", escaped_filename)
+					end
 				end,
 
 				java = function()
-					-- Check if the project is a Gradle or Maven project and choose the appropriate run command
+					-- For Java, require saving first (don't use temp files)
+					if vim.bo.modified then
+						vim.notify("Please save your Java file before running it.", vim.log.levels.WARN)
+						return nil
+					end
+
+					-- Check if the project is a Gradle or Maven project
 					if project_info.has_gradle then
 						return "./gradlew run"
 					elseif project_info.has_pom then
 						return "mvn exec:java"
 					else
-						local class_name = vim.fn.fnamemodify(filename, ":t:r") -- Get the Java class name
+						local class_name = vim.fn.fnamemodify(plain_filename, ":t:r") -- Get the Java class name
 						local package_name = extract_java_package(content)
+						local ui_frameworks = detect_java_ui_frameworks(content)
 
+						-- Base command components
+						local compile_cmd = ""
+						local run_cmd = ""
+						local modules = ""
+
+						-- Add JavaFX module path for JavaFX applications
+						if ui_frameworks.has_javafx then
+							-- Path to JavaFX SDK - using JAVAFX_HOME environment variable
+							modules =
+								'--module-path "$JAVAFX_HOME/lib" --add-modules javafx.controls,javafx.fxml,javafx.graphics '
+						end
+
+						-- Add headless=false if using AWT, Swing or JOptionPane
+						if ui_frameworks.has_swing or ui_frameworks.has_awt or ui_frameworks.has_optionpane then
+							modules = modules .. "-Djava.awt.headless=false "
+						end
+
+						-- Handle files with package declarations
 						if package_name then
-							-- Handle Java files with package declarations
-							if vim.bo.modified then
-								-- For unsaved content with package declaration, inform the user
-								vim.notify("Cannot run unsaved Java file with package declaration", vim.log.levels.WARN)
-								return nil
-							else
-								-- For saved file with package, find proper classpath and run
-								local file_dir = vim.fn.fnamemodify(filename, ":h") -- Get directory of the file
-								local package_path = package_name:gsub("%.", "/")
-								local root_dir = file_dir:gsub("/" .. package_path .. "$", "")
+							local file_dir = vim.fn.fnamemodify(plain_filename, ":h") -- Get directory of the file
+							local package_path = package_name:gsub("%.", "/")
+							local root_dir = file_dir:gsub("/" .. package_path .. "$", "")
 
-								return string.format("cd %s && java -cp . %s.%s", root_dir, package_name, class_name)
-							end
+							-- Escape the root directory for shell
+							local escaped_root_dir = vim.fn.shellescape(root_dir)
+
+							-- Create the compile and run commands with proper escaping
+							compile_cmd =
+								string.format("cd %s && javac %s/%s.java", escaped_root_dir, package_path, class_name)
+
+							run_cmd = string.format("java %s%s.%s", modules, package_name, class_name)
+
+							return compile_cmd .. " && " .. run_cmd
 						else
-							-- No package declaration, run as before
-							return vim.bo.modified and string.format([[echo '%s' | java -]], content)
-								or string.format("java %s", filename)
+							-- No package declaration, simpler case
+							local escaped_filename = vim.fn.shellescape(plain_filename)
+							compile_cmd = string.format("javac %s", escaped_filename)
+							run_cmd = string.format("java %s%s", modules, class_name)
+
+							return compile_cmd .. " && " .. run_cmd
 						end
 					end
 				end,
 
 				javascript = function()
-					-- Run the JavaScript file with Node.js
-					return vim.bo.modified and string.format([[node -e '%s']], content)
-						or string.format("node %s", filename)
+					-- Require saving JavaScript files before running
+					if vim.bo.modified then
+						vim.notify("Please save your JavaScript file before running it.", vim.log.levels.WARN)
+						return nil
+					else
+						local escaped_filename = vim.fn.shellescape(plain_filename)
+						return string.format("node %s", escaped_filename)
+					end
 				end,
 
 				lua = function()
-					-- Run the Lua script
-					return vim.bo.modified and string.format([[lua -e '%s']], content)
-						or string.format("lua %s", filename)
+					-- Require saving Lua files before running
+					if vim.bo.modified then
+						vim.notify("Please save your Lua file before running it.", vim.log.levels.WARN)
+						return nil
+					else
+						local escaped_filename = vim.fn.shellescape(plain_filename)
+						return string.format("lua %s", escaped_filename)
+					end
 				end,
 			}
 
 			return commands[filetype] and commands[filetype]() or nil -- Return the appropriate command based on filetype
 		end
 
-		-- Terminal configuration initialization using toggleterm.nvim
+		-- Terminal configuration initialization
 		require("toggleterm").setup({
 			size = function(term)
-				-- Dynamically set the terminal size based on the direction (horizontal or vertical)
+				-- Dynamically set the terminal size based on the direction
 				if term.direction == "horizontal" then
 					return 15 -- Horizontal terminal size (in lines)
 				elseif term.direction == "vertical" then
@@ -129,8 +187,7 @@ return {
 			local command = get_run_command(filename, filetype) -- Get the appropriate run command
 
 			if not command then
-				vim.notify("No run command defined for filetype: " .. filetype, vim.log.levels.ERROR)
-				return
+				return -- Command will be nil if file needs to be saved first
 			end
 
 			-- Configure and launch the terminal instance to run the file
@@ -155,6 +212,7 @@ return {
 					if exit_code ~= 0 then
 						vim.notify(string.format("Process exited with code %d", exit_code), vim.log.levels.WARN)
 					end
+
 					-- Restore cursor position if it was previously saved
 					if terminal_state.last_position then
 						vim.api.nvim_win_set_cursor(term.window, terminal_state.last_position)
