@@ -60,7 +60,7 @@ return {
 			local root_dir = require("jdtls.setup").find_root({ ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" })
 
 			-- If no project root found, use the current directory
-			if root_dir == "" then
+			if not root_dir or root_dir == "" then
 				root_dir = vim.fn.getcwd()
 			end
 
@@ -75,19 +75,52 @@ return {
 			end
 
 			-- Get the Mason installation path for jdtls
-			local mason_registry = require("mason-registry")
-			local jdtls_pkg = mason_registry.get_package("jdtls")
-			local jdtls_path = jdtls_pkg:get_install_path()
+			-- FIX: This section has been reworked to be more robust
+			local jdtls_path = vim.fn.expand("~/.local/share/nvim/mason/packages/jdtls")
+
+			-- Only try to get the path from Mason if the module exists
+			local status_ok, mason_registry = pcall(require, "mason-registry")
+			if status_ok then
+				-- Check if the registry has a get_package method
+				if mason_registry.get_package then
+					-- Safely try to get the jdtls package
+					local pkg_ok, jdtls_pkg = pcall(mason_registry.get_package, "jdtls")
+					if pkg_ok and jdtls_pkg then
+						-- Safely try to get the install path
+						local path_ok, path = pcall(function()
+							return jdtls_pkg:get_install_path()
+						end)
+						if path_ok and path then
+							jdtls_path = path
+						end
+					end
+				end
+			end
+
+			-- Make sure this path actually exists
+			if vim.fn.isdirectory(jdtls_path) ~= 1 then
+				vim.notify(
+					"JDTLS installation not found at: "
+						.. jdtls_path
+						.. ". Please install JDTLS using :MasonInstall jdtls",
+					vim.log.levels.ERROR
+				)
+				-- Return early to avoid further errors
+				return
+			end
 
 			-- Detect available JDK installations
 			-- Helper function to check if a path exists
 			local function path_exists(path)
+				if not path then
+					return false
+				end
 				return vim.fn.isdirectory(path) == 1
 			end
 
 			-- Homebrew JDK paths
 			local jdk_paths = {
-        ["JavaSE-21"] = os.getenv("JAVA_HOME"),
+				["JavaSE-21"] = os.getenv("JAVA_HOME"),
 			}
 
 			-- Filter to only include existing JDK paths
@@ -96,6 +129,18 @@ return {
 				if path_exists(path) then
 					table.insert(available_runtimes, { name = name, path = path })
 				end
+			end
+
+			-- Safely build the launcher jar path
+			local launcher_jar
+			local launcher_pattern = jdtls_path .. "/plugins/org.eclipse.equinox.launcher_*.jar"
+			local launcher_files = vim.fn.glob(launcher_pattern, true, true)
+
+			if #launcher_files > 0 then
+				launcher_jar = launcher_files[1]
+			else
+				vim.notify("JDTLS launcher jar not found with pattern: " .. launcher_pattern, vim.log.levels.ERROR)
+				return
 			end
 
 			-- JDTLS configuration for Java projects
@@ -117,7 +162,7 @@ return {
 
 					-- The main jar file of the language server
 					"-jar",
-					vim.fn.glob(jdtls_path .. "/plugins/org.eclipse.equinox.launcher_*.jar"),
+					launcher_jar,
 
 					-- Configuration for the language server
 					"-configuration",
@@ -211,9 +256,15 @@ return {
 					},
 				},
 
-				-- Add capabilities from nvim-cmp
-				-- This enables autocompletion integration with completion engine
-				capabilities = require("cmp_nvim_lsp").default_capabilities(),
+				-- Add capabilities from nvim-cmp if available
+				capabilities = (function()
+					local has_cmp, cmp_lsp = pcall(require, "cmp_nvim_lsp")
+					if has_cmp then
+						return cmp_lsp.default_capabilities()
+					else
+						return vim.lsp.protocol.make_client_capabilities()
+					end
+				end)(),
 
 				-- Configure Java-specific features
 				init_options = {
@@ -272,18 +323,6 @@ return {
 					buf_set_keymap("n", "<leader>ca", function()
 						vim.lsp.buf.code_action()
 					end, "Code Action")
-
-					-- Test related commands (kept for reference but commented out)
-					-- These are the testing functions mentioned earlier
-					-- Uncomment if you need Java testing capabilities
-					--[[ 
-					buf_set_keymap("n", "<leader>tc", function()
-						require("jdtls").test_class()
-					end, "Test Class")
-					buf_set_keymap("n", "<leader>tm", function()
-						require("jdtls").test_nearest_method()
-					end, "Test Method")
-					--]]
 				end,
 
 				-- Configure how the language server interacts with Neovim
@@ -309,11 +348,15 @@ return {
 				},
 			}
 
-			-- Start or attach to the language server
-			require("jdtls").start_or_attach(config)
-
-			-- Store the current buffer number in a global variable to track the most recent Java buffer
-			vim.g.last_active_java_buffer = vim.api.nvim_get_current_buf()
+			-- Safely start or attach to the language server
+			local has_jdtls, jdtls = pcall(require, "jdtls")
+			if has_jdtls then
+				jdtls.start_or_attach(config)
+				-- Store the current buffer number in a global variable to track the most recent Java buffer
+				vim.g.last_active_java_buffer = vim.api.nvim_get_current_buf()
+			else
+				vim.notify("Failed to require jdtls module", vim.log.levels.ERROR)
+			end
 		end
 
 		-- Setup an autocommand to configure jdtls when opening a Java file
@@ -372,14 +415,14 @@ return {
 									vim.notify("Restarting JDTLS after inactivity", vim.log.levels.INFO)
 									setup_jdtls()
 								end)
-							end, 200) -- Wait 500ms after focus is gained
+							end, 200) -- Wait 200ms after focus is gained
 						end
 					end
 				end
 
 				-- Also check current buffer if it's Java
 				local current_buf = vim.api.nvim_get_current_buf()
-				local ft = vim.api.nvim_buf_get_option(current_buf, "filetype")
+				local ft = vim.bo[current_buf].filetype
 				if ft == "java" then
 					local clients = vim.lsp.get_active_clients({ bufnr = current_buf, name = "jdtls" })
 					if #clients == 0 then
