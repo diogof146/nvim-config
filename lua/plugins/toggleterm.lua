@@ -1,5 +1,6 @@
 -- Terminal Integration for Neovim - Fixed Java Command Generation
 -- Now includes automatic directory change to file's location when running
+-- Fixed Maven project detection and execution
 
 return {
   "akinsho/toggleterm.nvim",
@@ -10,12 +11,34 @@ return {
       last_position = nil, -- Tracks the cursor position in the terminal for restore after exiting
     }
 
+    -- Function to find the project root by looking for pom.xml or build.gradle
+    local function find_project_root(start_path)
+      local current_path = start_path or vim.fn.expand("%:p:h")
+
+      while current_path ~= "/" and current_path ~= "" do
+        -- Check for pom.xml (Maven)
+        if vim.fn.filereadable(current_path .. "/pom.xml") == 1 then
+          return current_path, "maven"
+        end
+        -- Check for build.gradle (Gradle)
+        if vim.fn.filereadable(current_path .. "/build.gradle") == 1 then
+          return current_path, "gradle"
+        end
+        -- Move up one directory
+        current_path = vim.fn.fnamemodify(current_path, ":h")
+      end
+
+      return nil, nil
+    end
+
     -- Function to detect project type by checking for specific configuration files
     local function detect_project_type()
-      local files = vim.fn.glob(vim.fn.getcwd() .. "/*", true, true)          -- Scans the current directory
+      local project_root, project_type = find_project_root()
       return {
-        has_pom = vim.tbl_contains(files, vim.fn.getcwd() .. "/pom.xml"),     -- Checks for pom.xml (Maven project)
-        has_gradle = vim.tbl_contains(files, vim.fn.getcwd() .. "/build.gradle"), -- Checks for build.gradle (Gradle project)
+        has_pom = project_type == "maven",
+        has_gradle = project_type == "gradle",
+        project_root = project_root,
+        project_type = project_type,
       }
     end
 
@@ -38,7 +61,7 @@ return {
     end
 
     -- Generates language-specific run commands based on the file type and content
-    -- Modified to always run from the file's directory
+    -- Modified to always run from the file's directory for non-Maven/Gradle projects
     local function get_run_command(filename, filetype)
       local project_info = detect_project_type()                                   -- Detect if the project uses Maven or Gradle
       local content = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n") -- Get the current buffer's content
@@ -46,7 +69,7 @@ return {
       local file_dir = vim.fn.fnamemodify(plain_filename, ":h")                    -- Get the directory containing the file
 
       -- Define the run commands for different programming languages
-      -- Each command now includes a cd to the file's directory first
+      -- Each command now includes a cd to the appropriate directory first
       local commands = {
         python = function()
           -- For Python, run unsaved content directly using python -c
@@ -70,10 +93,43 @@ return {
           end
 
           -- Check if the project is a Gradle or Maven project
-          if project_info.has_gradle then
-            return string.format("cd %s && ./gradlew run", vim.fn.shellescape(file_dir))
-          elseif project_info.has_pom then
-            return string.format("cd %s && mvn exec:java", vim.fn.shellescape(file_dir))
+          if project_info.has_gradle and project_info.project_root then
+            local escaped_root = vim.fn.shellescape(project_info.project_root)
+            return string.format("cd %s && ./gradlew run", escaped_root)
+          elseif project_info.has_pom and project_info.project_root then
+            local escaped_root = vim.fn.shellescape(project_info.project_root)
+
+            -- Check if pom.xml has exec plugin with mainClass configured
+            local pom_content = vim.fn.readfile(project_info.project_root .. "/pom.xml")
+            local pom_text = table.concat(pom_content, "\n")
+
+            -- Look for mainClass in pom.xml configuration
+            local main_class_in_pom = string.match(pom_text, "<mainClass>([^<]+)</mainClass>")
+
+            if main_class_in_pom then
+              -- Use the mainClass from pom.xml
+              return string.format("cd %s && mvn -q exec:java", escaped_root)
+            else
+              -- Try to find the main class from the current file
+              local package_name = extract_java_package(content)
+              local class_name = vim.fn.fnamemodify(plain_filename, ":t:r")
+
+              if package_name then
+                local full_class_name = package_name .. "." .. class_name
+                return string.format(
+                  'cd %s && mvn -q exec:java -Dexec.mainClass="%s"',
+                  escaped_root,
+                  full_class_name
+                )
+              else
+                -- No package, just use class name
+                return string.format(
+                  'cd %s && mvn -q exec:java -Dexec.mainClass="%s"',
+                  escaped_root,
+                  class_name
+                )
+              end
+            end
           else
             local class_name = vim.fn.fnamemodify(plain_filename, ":t:r") -- Get the Java class name
             local package_name = extract_java_package(content)
