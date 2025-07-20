@@ -39,6 +39,9 @@ return {
 				"ts_ls", -- TypeScript/JavaScript LSP
 				"jdtls", -- Java
 				"clangd", -- C/C++ LSP
+				"html", -- HTML LSP
+				"cssls", -- CSS LSP
+				"emmet_ls", -- Emmet for HTML/CSS abbreviations
 			},
 			-- Automatically install missing LSP servers
 			automatic_installation = true, -- Ensures missing LSP servers are installed automatically
@@ -52,56 +55,28 @@ return {
 			vim.g.diagnostics_visible = false
 		end
 
+		-- Configure diagnostics display settings
+		local function setup_diagnostics(enabled)
+			vim.diagnostic.config({
+				virtual_text = enabled,
+				signs = enabled,
+				underline = enabled,
+				update_in_insert = false,
+				severity_sort = false,
+			})
+		end
+
 		-- Disable diagnostics by default (on startup)
-		vim.diagnostic.config({
-			virtual_text = false,
-			signs = false,
-			underline = false,
-			update_in_insert = false,
-			severity_sort = false,
-		})
+		setup_diagnostics(false)
 
 		-- Add keybind to toggle diagnostics
 		vim.keymap.set("n", "<localleader>dg", function()
 			vim.g.diagnostics_visible = not vim.g.diagnostics_visible
-			if vim.g.diagnostics_visible then
-				-- Enable all diagnostic displays
-				vim.diagnostic.config({
-					virtual_text = true,
-					signs = true,
-					underline = true,
-					update_in_insert = false,
-					severity_sort = false,
-				})
-			else
-				-- Disable all diagnostic displays
-				vim.diagnostic.config({
-					virtual_text = false,
-					signs = false,
-					underline = false,
-					update_in_insert = false,
-					severity_sort = false,
-				})
-			end
+			setup_diagnostics(vim.g.diagnostics_visible)
 		end, { desc = "Toggle diagnostics" })
 
 		-- Import cmp-nvim-lsp to extend LSP functionality with autocompletion capabilities
 		local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-		-- Advanced setup for code actions (e.g., refactorings, quick fixes)
-		capabilities.textDocument.codeAction = {
-			dynamicRegistration = true, -- Enable dynamic registration for code actions
-			codeActionLiteralSupport = {
-				codeActionKind = {
-					valueSet = (function()
-						-- Generate and sort supported code action kinds
-						local res = vim.tbl_values(vim.lsp.protocol.CodeActionKind)
-						table.sort(res)
-						return res
-					end)(),
-				},
-			},
-		}
 
 		-- Function to attach LSP functionality to a buffer
 		local on_attach = function(client, bufnr)
@@ -115,30 +90,7 @@ return {
 
 			-- Keymap for invoking code actions (e.g., refactoring, quick fixes)
 			buf_set_keymap("n", "<leader>ca", function()
-				-- Context for code actions
-				local context = {
-					diagnostics = vim.lsp.get_clients({ bufnr = bufnr })[1]
-							and vim.diagnostic.get(bufnr, { lnum = vim.fn.line(".") - 1 })
-						or {}, -- Retrieve diagnostics for the current line
-					only = vim.tbl_values(vim.lsp.protocol.CodeActionKind), -- All code action kinds
-				}
-
-				-- Trigger the code action menu with context
-				vim.lsp.buf.code_action({
-					context = context,
-					callback = function(_, actions)
-						if not actions or #actions == 0 then
-							vim.notify("No code actions available", vim.log.levels.INFO)
-							return
-						end
-						-- If Telescope is installed, use it for a better UI
-						if pcall(require, "telescope") then
-							require("telescope.builtin").lsp_code_actions()
-						else
-							vim.lsp.buf.code_action()
-						end
-					end,
-				})
+				vim.lsp.buf.code_action()
 			end, "Code Action")
 
 			-- LSP keybindings for navigating definitions, documentation, renaming symbols, etc.
@@ -176,15 +128,9 @@ return {
 		lspconfig.ruff.setup({
 			on_attach = on_attach,
 			capabilities = capabilities,
-			init_options = {
-				settings = {
-					ruff = {
-						lint = {
-							enable = true, -- Enable linting via Ruff
-							args = { "--line-length=500" }, -- Customize line length for linting
-						},
-					},
-				},
+			settings = {
+				-- Configure Ruff linting and formatting options
+				args = { "--line-length=500" }, -- Set custom line length for linting
 			},
 		})
 
@@ -192,6 +138,30 @@ return {
 		lspconfig.ts_ls.setup({
 			on_attach = on_attach,
 			capabilities = capabilities,
+			settings = {
+				typescript = {
+					inlayHints = {
+						includeInlayParameterNameHints = "all", -- Show parameter name hints
+						includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+						includeInlayFunctionParameterTypeHints = true,
+						includeInlayVariableTypeHints = true,
+						includeInlayPropertyDeclarationTypeHints = true,
+						includeInlayFunctionLikeReturnTypeHints = true,
+						includeInlayEnumMemberValueHints = true,
+					},
+				},
+				javascript = {
+					inlayHints = {
+						includeInlayParameterNameHints = "all",
+						includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+						includeInlayFunctionParameterTypeHints = true,
+						includeInlayVariableTypeHints = true,
+						includeInlayPropertyDeclarationTypeHints = true,
+						includeInlayFunctionLikeReturnTypeHints = true,
+						includeInlayEnumMemberValueHints = true,
+					},
+				},
+			},
 		})
 
 		-- Configuration for C/C++ LSP (Clangd)
@@ -221,6 +191,85 @@ return {
 						DeducedTypes = true, -- Show deduced type hints
 					},
 					fallbackFlags = { "-std=c++17" }, -- Default to C++17 standard when no compile_commands.json
+				},
+			},
+		})
+
+		-- HTML Language Server configuration
+		lspconfig.html.setup({
+			on_attach = on_attach,
+			capabilities = capabilities,
+			settings = {
+				html = {
+					format = {
+						templating = true, -- Enable formatting for templating languages
+						wrapLineLength = 120, -- Wrap lines at 120 characters
+						wrapAttributes = "auto", -- Auto wrap attributes
+					},
+					hover = {
+						documentation = true, -- Show documentation on hover
+						references = true, -- Show references on hover
+					},
+					completion = {
+						attributeDefaultValue = "doublequotes", -- Use double quotes for attribute values
+					},
+				},
+			},
+		})
+
+		-- CSS Language Server configuration
+		lspconfig.cssls.setup({
+			on_attach = on_attach,
+			capabilities = capabilities,
+			settings = {
+				css = {
+					validate = true, -- Enable CSS validation
+					lint = {
+						unknownAtRules = "ignore", -- Ignore unknown at-rules (useful for CSS frameworks)
+					},
+				},
+				scss = {
+					validate = true, -- Enable SCSS validation
+					lint = {
+						unknownAtRules = "ignore",
+					},
+				},
+				less = {
+					validate = true, -- Enable Less validation
+					lint = {
+						unknownAtRules = "ignore",
+					},
+				},
+			},
+		})
+
+		-- Emmet Language Server configuration for HTML/CSS abbreviations
+		lspconfig.emmet_ls.setup({
+			on_attach = on_attach,
+			capabilities = capabilities,
+			filetypes = {
+				"html",
+				"htmldjango",
+				"css",
+				"sass",
+				"scss",
+				"less",
+				"javascript",
+				"javascriptreact",
+				"typescript",
+				"typescriptreact",
+				"vue",
+				"svelte",
+			},
+			settings = {
+				emmet = {
+					includeLanguages = {
+						-- Enable Emmet in JavaScript files for JSX
+						javascript = "javascriptreact",
+						typescript = "typescriptreact",
+						vue = "html",
+						svelte = "html",
+					},
 				},
 			},
 		})
