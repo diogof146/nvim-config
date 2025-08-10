@@ -29,31 +29,36 @@ return {
 				vim.opt_local.bufhidden = "wipe" -- Automatically remove buffer when hidden
 				vim.opt_local.guicursor = "a:block-Cursor/lCursor-blinkon0" -- Hide cursor in dashboard
 				vim.cmd([[highlight Cursor blend=100]]) -- Make the cursor transparent
-				-- Background: Set black background for dashboard
-				vim.cmd([[highlight DashboardNormal guibg=#000000 ctermbg=0]])
-				vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
+				
+				-- COMMENTED BLACK BACKGROUND SETTINGS (uncomment if needed for theme changes)
+				-- vim.cmd([[highlight DashboardNormal guibg=#000000 ctermbg=0]])
+				-- vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
 			end,
 		})
 
-		-- Fix cursor and background visibility issue when staying in the dashboard
+		-- Fix cursor visibility when staying in the dashboard
 		vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
 			pattern = "*",
 			callback = function()
 				if vim.bo.filetype == "dashboard" then
 					vim.opt_local.guicursor = "a:block-Cursor/lCursor-blinkon0"
 					vim.cmd([[highlight Cursor blend=100]])
-					-- Ensure black background is maintained for dashboard
-					vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
+					
+					-- COMMENTED BLACK BACKGROUND
+					-- vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
+
 				else
 					vim.opt.guicursor = original_guicursor
 					vim.cmd([[highlight Cursor blend=0]])
-					-- Restore normal background color for non-dashboard buffers
-					vim.api.nvim_set_hl(0, "Normal", { bg = nil })
+					
+					-- COMMENTED BACKGROUND RESTORATION
+					-- vim.api.nvim_set_hl(0, "Normal", { bg = nil })
 				end
+
 			end,
 		})
 
-		-- Only restore the background when actually loading a real file, not just when leaving dashboard temporarily
+		-- Only restore settings when actually loading a real file, not just when leaving dashboard temporarily
 		vim.api.nvim_create_autocmd("BufEnter", {
 			pattern = "*",
 			callback = function()
@@ -65,18 +70,22 @@ return {
 				if filetype ~= "dashboard" and filename ~= "" then
 					vim.opt.guicursor = original_guicursor
 					vim.cmd([[highlight Cursor blend=0]])
-					vim.api.nvim_set_hl(0, "Normal", { bg = nil })
+					
+					-- COMMENTED BACKGROUND RESTORATION
+					-- vim.api.nvim_set_hl(0, "Normal", { bg = nil })
+
 				end
 
-				-- Make sure dashboard always has the black background
-				if filetype == "dashboard" then
-					vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
-				end
+				-- COMMENTED DASHBOARD BLACK BACKGROUND ENFORCEMENT
+				-- if filetype == "dashboard" then
+				--     vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
+				-- end
+
 			end,
 		})
 
 		db.setup({
-			theme = "doom", -- Use the "doom" theme (other option would be hyper)
+			theme = "doom", -- Use the "doom" theme
 			shortcut_type = "letter", -- Display shortcuts as letters instead of numbers
 			shuffle_letter = false, -- Maintain consistent shortcut order (no randomization)
 			disable_move = true, -- Prevent cursor movement in the dashboard interface
@@ -108,58 +117,17 @@ return {
 					"⠀⠀⠀⠀⠹⣿⣿⠿⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⢰⣿⠏⠀⠈⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
 					"⠀⠀⠀⠀⠀⠈⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⣿⣿⣿⣏⠀⠀⠀⢀⣴⡿⠋⠀⠀⠀⠸⣿⣿⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
 					"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠙⢿⣿⣿⣿⣿⣷⣶⣶⣿⠟⠁⠀⠀⠀⠀⠀⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
-					"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠛⠻⠿⠿⠟⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
 					"",
 					"",
           "",
 				},
 
-				-- Disable week header
+				-- Disable week header for better performance
 				week_header = {
 					enable = false,
 				},
 
-				-- Quick Action Shortcuts
-				shortcut = {
-					{
-						desc = " Find File", -- Search for a file in the current project
-						group = "DashboardShortcut", -- Group name for styling
-						action = "Telescope find_files", -- Uses Telescope to search for files
-						key = "f", -- Shortcut key for this action
-					},
-					{
-						desc = " Recent Files", -- Access recently opened files
-						group = "DashboardShortcut",
-						action = "Telescope oldfiles", -- Uses Telescope to show recent files
-						key = "r",
-					},
-					{
-						desc = " Find Word", -- Search for a word in all files
-						group = "DashboardShortcut",
-						action = "Telescope live_grep", -- Uses Telescope to perform a text search
-						key = "g",
-					},
-					{
-						desc = " New File", -- Create a new, empty buffer
-						group = "DashboardShortcut",
-						action = "enew", -- Opens a new file
-						key = "n",
-					},
-					{
-						desc = " Configuration", -- Open configuration file
-						group = "DashboardShortcut",
-						action = "e $MYVIMRC", -- Edit Neovim configuration
-						key = "c",
-					},
-					{
-						desc = " Quit Neovim", -- Exit the editor
-						group = "DashboardShortcut",
-						action = "qa", -- Quit all
-						key = "q",
-					},
-				},
-
-				-- Center content configuration
+				-- Main shortcut actions for the dashboard
 				center = {
 					{
 						icon = " ",
@@ -182,20 +150,57 @@ return {
 					{
 						icon = " ",
 						icon_hl = "DashboardIcon",
-						desc = "Find Word",
-						desc_hl = "DashboardDesc",
-						key = "g",
-						key_hl = "DashboardKey",
-						action = "Telescope live_grep",
-					},
-					{
-						icon = " ",
-						icon_hl = "DashboardIcon",
 						desc = "New File",
 						desc_hl = "DashboardDesc",
 						key = "n",
 						key_hl = "DashboardKey",
 						action = "enew",
+					},
+					{
+						icon = " ",
+						icon_hl = "DashboardIcon",
+						desc = "Bookmarks",
+						desc_hl = "DashboardDesc",
+						key = "b",
+						key_hl = "DashboardKey",
+						action = "Telescope marks",
+					},
+					{
+						icon = " ",
+						icon_hl = "DashboardIcon",
+						desc = "Plugin Manager",
+						desc_hl = "DashboardDesc",
+						key = "l",
+						key_hl = "DashboardKey",
+						action = "Lazy",
+					},
+					-- COMMENTED PROJECT INTEGRATION (uncomment after installing project.nvim)
+					-- {
+					--     icon = " ",
+					--     icon_hl = "DashboardIcon",
+					--     desc = "Projects",
+					--     desc_hl = "DashboardDesc",
+					--     key = "p",
+					--     key_hl = "DashboardKey",
+					--     action = "Telescope projects",
+					-- },
+					{
+						icon = " ",
+						icon_hl = "DashboardIcon",
+						desc = "Help Tags",
+						desc_hl = "DashboardDesc",
+						key = "h",
+						key_hl = "DashboardKey",
+						action = "Telescope help_tags",
+					},
+					{
+						icon = " ",
+						icon_hl = "DashboardIcon",
+						desc = "Terminal",
+						desc_hl = "DashboardDesc",
+						key = "t",
+						key_hl = "DashboardKey",
+						action = "terminal",
 					},
 					{
 						icon = " ",
@@ -217,7 +222,7 @@ return {
 					},
 				},
 
-				-- Disable project section to simplify the dashboard
+				-- Disable project section to keep dashboard clean and fast
 				project = {
 					enable = false,
 				},
@@ -225,12 +230,12 @@ return {
 				-- Vertically center all content in the dashboard
 				vertical_center = true,
 
-				-- Empty footer
+				-- Empty footer for clean appearance
 				footer = {},
 			},
 		})
 
-		-- Set up dashboard colours
+		-- Set up dashboard color scheme
 		vim.cmd([[
       highlight DashboardHeader guifg=#0fa9b8
       highlight DashboardIcon guifg=#00ffff

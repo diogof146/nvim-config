@@ -3,13 +3,13 @@
 return {
 	dir = vim.fn.stdpath("config") .. "/lua", -- Theme directory
 
-	name = "theme_4", -- Theme name (make sure this is the name of the theme file)
+	name = "theme_5", -- Theme name
 
 	priority = 1000, -- High priority ensures theme loads early
 
 	config = function()
 		-- Use a protected call (`pcall`) to load the theme safely.
-		local ok, theme = pcall(require, "theme_4")
+		local ok, theme = pcall(require, "theme_5")
 
 		if ok then
 			theme.setup() -- Set up the theme's configuration
