@@ -57,6 +57,13 @@ vim.keymap.set("n", "<Leader>db", ":Dashboard<CR>", { noremap = true, silent = t
 -- Map <Leader>b to go to the previous buffer (:bp)
 vim.keymap.set("n", "<Leader>b", ":bp<CR>", { noremap = true, silent = true })
 
+-- Making :Q and :W case insensitive because I have fat fingers
+vim.api.nvim_create_user_command("Q", "q", { bang = true })
+vim.api.nvim_create_user_command("W", "w", { bang = true })
+vim.api.nvim_create_user_command("Wq", "wq", { bang = true })
+vim.api.nvim_create_user_command("Wqa", "wqa", { bang = true })
+vim.api.nvim_create_user_command("WQa", "wqa", { bang = true })
+vim.api.nvim_create_user_command("WQA", "wqa", { bang = true })
 
 -- Mapping global word replacement with confirmation
 vim.keymap.set('n', '<leader>r', ':%s/\\<<C-r><C-w>\\>//gc<left><left><left>', { noremap = true })
