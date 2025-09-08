@@ -25,6 +25,8 @@ return {
 
 				formatting.isort, -- 'isort' is used to sort imports in Python files
 
+        formatting.swiftformat, -- Swift code formatter
+
 				-- Lua Formatting
 				formatting.stylua, -- 'stylua' is a code formatter for Lua
 

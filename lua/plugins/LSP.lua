@@ -15,36 +15,15 @@ return {
 
 		-- Handles installation and management of LSP servers and tools
 		"williamboman/mason.nvim", -- Mason: LSP server and tool manager
-
-		-- Integrates Mason with nvim-lspconfig, simplifying LSP server setup
-		"williamboman/mason-lspconfig.nvim", -- Mason integration for nvim-lspconfig
 	},
 
 	config = function()
-		-- Setup Mason: A tool for managing LSP servers and related tools
+		-- Setup Mason: A tool for managing LSP servers and related tools (installation only)
 		require("mason").setup({
 			ui = {
 				border = "rounded", -- Rounded borders for Mason's UI
 				check_outdated_packages_on_open = true, -- Check for outdated packages upon opening Mason
 			},
-		})
-
-		-- Setup Mason-LSPConfig: Automates installation of LSP servers
-		require("mason-lspconfig").setup({
-			-- List of LSP servers to install automatically via Mason
-			ensure_installed = {
-				"pyright", -- Python LSP
-				"lua_ls", -- Lua LSP
-				"ruff", -- Python linter (as LSP server)
-				"ts_ls", -- TypeScript/JavaScript LSP
-				"jdtls", -- Java
-				"clangd", -- C/C++ LSP
-				"html", -- HTML LSP
-				"cssls", -- CSS LSP
-				"emmet_ls", -- Emmet for HTML/CSS abbreviations
-			},
-			-- Automatically install missing LSP servers
-			automatic_installation = true, -- Ensures missing LSP servers are installed automatically
 		})
 
 		-- Import core LSP configuration
@@ -88,21 +67,27 @@ return {
 				vim.keymap.set(mode, key, func, { buffer = bufnr, desc = desc })
 			end
 
-			-- Keymap for invoking code actions (e.g., refactoring, quick fixes)
-			buf_set_keymap("n", "<leader>ca", function()
-				vim.lsp.buf.code_action()
-			end, "Code Action")
-
-			-- LSP keybindings for navigating definitions, documentation, renaming symbols, etc.
+			-- Navigation keybindings
 			buf_set_keymap("n", "gd", vim.lsp.buf.definition, "Go to Definition")
-			buf_set_keymap("n", "K", vim.lsp.buf.hover, "Show Documentation")
-			buf_set_keymap("n", "<leader>rn", vim.lsp.buf.rename, "Rename Symbol")
-			buf_set_keymap("n", "<leader>e", vim.diagnostic.open_float, "Show Line Diagnostics")
-			buf_set_keymap("n", "[d", vim.diagnostic.goto_prev, "Previous Diagnostic")
-			buf_set_keymap("n", "]d", vim.diagnostic.goto_next, "Next Diagnostic")
-			buf_set_keymap("n", "gr", vim.lsp.buf.references, "Find References")
+			buf_set_keymap("n", "gD", vim.lsp.buf.declaration, "Go to Declaration")
+			buf_set_keymap("n", "gt", vim.lsp.buf.type_definition, "Go to Type Definition")
 			buf_set_keymap("n", "gi", vim.lsp.buf.implementation, "Go to Implementation")
-		end
+			buf_set_keymap("n", "gr", vim.lsp.buf.references, "Find References")
+
+			-- Documentation
+			buf_set_keymap("n", "K", vim.lsp.buf.hover, "Show Documentation")
+
+			-- Code actions
+			buf_set_keymap("n", "<leader>ca", vim.lsp.buf.code_action, "Code Action")
+
+			-- Inlay hints toggle (if supported)
+			if client.server_capabilities.inlayHintProvider then
+				buf_set_keymap("n", "<leader>ih", function()
+					local bufnr = vim.api.nvim_get_current_buf()
+					vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }), { bufnr = bufnr })
+				end, "Toggle Inlay Hints")
+			end
+    end
 
 		-- Configuration for Python LSP (Pyright)
 		lspconfig.pyright.setup({
@@ -116,7 +101,7 @@ return {
 						useLibraryCodeForTypes = true, -- Use library code for type inference
 						typeCheckingMode = "basic", -- Basic type checking mode
 						diagnosticSeverityOverrides = { -- Override diagnostic severity levels for specific issues
-							reportGeneralTypeIssues = "error", -- Type issues reported as errors
+							reportGeneralTypeIssues = "error", -- Type issues reporte as errors
 							reportOptionalMemberAccess = "warning", -- Optional member access reported as warnings
 						},
 					},
@@ -272,6 +257,13 @@ return {
 					},
 				},
 			},
+		})
+
+		-- Swift Language Server configuration
+		lspconfig.sourcekit.setup({
+			on_attach = on_attach,
+			capabilities = capabilities,
+			cmd = { "sourcekit-lsp" }, -- Swift LSP command
 		})
 	end,
 }
