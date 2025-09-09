@@ -174,16 +174,15 @@ return {
 						key_hl = "DashboardKey",
 						action = "Lazy",
 					},
-					-- COMMENTED PROJECT INTEGRATION (uncomment after installing project.nvim)
-					-- {
-					--     icon = " ",
-					--     icon_hl = "DashboardIcon",
-					--     desc = "Projects",
-					--     desc_hl = "DashboardDesc",
-					--     key = "p",
-					--     key_hl = "DashboardKey",
-					--     action = "Telescope projects",
-					-- },
+					{
+					    icon = " ",
+					    icon_hl = "DashboardIcon",
+					    desc = "Projects",
+					    desc_hl = "DashboardDesc",
+					    key = "p",
+					    key_hl = "DashboardKey",
+					    action = "Telescope projects",
+					},
 					{
 						icon = " ",
 						icon_hl = "DashboardIcon",
