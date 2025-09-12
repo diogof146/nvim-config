@@ -1,0 +1,9 @@
+-- return {
+-- 	"diogof146/java-project-creator.nvim",
+-- 	config = function()
+-- 		require("java-project-creator").setup({
+--
+-- 			default_java_version = "21",
+-- 		})
+-- 	end,
+-- }
