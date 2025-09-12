@@ -37,6 +37,8 @@ My personalized Neovim configuration. This repository is actively maintained and
 - [neogen](https://github.com/danymat/neogen) - Annotation Toolkit
 - [java-project-creator](https://github.com/diogof146/java-project-creator.nvim) - Creating Java and Maven projects
 - [smear-cursor.nvim](https://github.com/sphamba/smear-cursor.nvim) - Smear cursor animation
+- [noice.nvim](https://github.com/folke/noice.nvim) - Better notifications
+- [neoscroll](https://github.com/karb94/neoscroll.nvim) - Fast scrolling
 <!-- - [garbage-day.nvim](https://github.com/Zeioth/garbage-day.nvim) - Garbage collector for LSP-->
 
 ## Installation
