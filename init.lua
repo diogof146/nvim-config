@@ -68,6 +68,9 @@ vim.api.nvim_create_user_command("WQA", "wqa", { bang = true })
 -- Mapping global word replacement with confirmation
 vim.keymap.set('n', '<leader>r', ':%s/\\<<C-r><C-w>\\>//gc<left><left><left>', { noremap = true })
 
+-- Mapping spell check with input spelllang
+vim.keymap.set('n', '<localleader>s', ':execute "setlocal spell spelllang=" . input("Enter spelllang: ")<CR>', { noremap = true, silent = true })
+
 -- Make delete operations not affect the clipboard
 -- The "void register" (_) is used to discard deleted text
 vim.keymap.set({ "n", "v" }, "d", '"_d', { noremap = true, desc = "Delete without yanking" })

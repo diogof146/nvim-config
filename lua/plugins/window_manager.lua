@@ -3,7 +3,7 @@
 -- Key Mappings:
 --   Window Navigation:   <leader>w + h/j/k/l - Move between windows
 --   Window Splits:      <leader>ws (horizontal), <leader>wv (vertical), <leader>w= (balance)
---   Window Resize:      <leader>rz (toggle mode), then use h/j/k/l
+--   Window Resize:      <leader>wr (toggle mode), then use h/j/k/l
 --   Tab Management:     <leader>tn (new), <leader>tc (close), <leader>1-9 (switch to specific tab)
 
 return {
@@ -38,7 +38,7 @@ return {
 			-- Updates statusline to indicate resize mode state
 			local function update_statusline()
 				if ResizeMode.active then
-					vim.o.statusline = "🔧 RESIZE MODE - Use HJKL to resize, <leader>rz to exit 🔧"
+					vim.o.statusline = "🔧 RESIZE MODE - Use HJKL to resize, <leader>wr to exit 🔧"
 				else
 					vim.o.statusline = ResizeMode.original_statusline
 				end
@@ -108,7 +108,7 @@ return {
 			vim.keymap.set("n", "<leader>w=", "<C-w>=", { desc = "Balance windows" })
 
 			-- Resize mode toggle
-			vim.keymap.set("n", "<leader>rz", toggle_resize_mode, { desc = "Toggle resize mode" })
+			vim.keymap.set("n", "<leader>wr", toggle_resize_mode, { desc = "Toggle resize mode" })
 
 			-- Tab management mappings
 			vim.keymap.set("n", "<leader>tn", "<cmd>tabnew<cr>", { desc = "New tab" })
