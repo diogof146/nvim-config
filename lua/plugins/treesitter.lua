@@ -1,7 +1,6 @@
 -- Syntax Highlighting and Smart Indentation for Neovim
 return {
-	-- The plugin repository for nvim-treesitter.
-	"nvim-treesitter/nvim-treesitter", -- Plugin source (GitHub: nvim-treesitter/nvim-treesitter)
+	"nvim-treesitter/nvim-treesitter",
 	-- The `build` function runs when the plugin is installed.
 	-- It updates the Treesitter parsers to ensure you have the latest versions.
 	build = function()

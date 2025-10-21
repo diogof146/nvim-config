@@ -1,7 +1,7 @@
 -- Integration with External Tools for Code Formatting and Diagnostics
 
 return {
-	"nvimtools/none-ls.nvim", -- Plugin repository (GitHub: nvimtools/none-ls.nvim)
+	"nvimtools/none-ls.nvim", -- Plugin repository
 
 	dependencies = { "nvim-lua/plenary.nvim" },
 
@@ -46,8 +46,6 @@ return {
 		})
 
 		-- Keybinding for formatting the current buffer
-		-- Maps the leader key followed by 'gf' to trigger the 'vim.lsp.buf.format' function,
-		-- which formats the buffer according to the configured formatters.
 		vim.keymap.set("n", "<leader>gf", vim.lsp.buf.format, { desc = "Format buffer" })
 	end,
 }

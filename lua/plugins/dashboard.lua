@@ -30,7 +30,7 @@ return {
 				vim.opt_local.guicursor = "a:block-Cursor/lCursor-blinkon0" -- Hide cursor in dashboard
 				vim.cmd([[highlight Cursor blend=100]]) -- Make the cursor transparent
 				
-				-- COMMENTED BLACK BACKGROUND SETTINGS (uncomment if needed for theme changes)
+				-- Commented out black bg settings in case I need it again
 				-- vim.cmd([[highlight DashboardNormal guibg=#000000 ctermbg=0]])
 				-- vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
 			end,
@@ -44,14 +44,14 @@ return {
 					vim.opt_local.guicursor = "a:block-Cursor/lCursor-blinkon0"
 					vim.cmd([[highlight Cursor blend=100]])
 					
-					-- COMMENTED BLACK BACKGROUND
+					-- Commented out black bg
 					-- vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
 
 				else
 					vim.opt.guicursor = original_guicursor
 					vim.cmd([[highlight Cursor blend=0]])
 					
-					-- COMMENTED BACKGROUND RESTORATION
+					-- Commented out bg restoration
 					-- vim.api.nvim_set_hl(0, "Normal", { bg = nil })
 				end
 
@@ -71,12 +71,12 @@ return {
 					vim.opt.guicursor = original_guicursor
 					vim.cmd([[highlight Cursor blend=0]])
 					
-					-- COMMENTED BACKGROUND RESTORATION
+					-- Commented out bg restoration
 					-- vim.api.nvim_set_hl(0, "Normal", { bg = nil })
 
 				end
 
-				-- COMMENTED DASHBOARD BLACK BACKGROUND ENFORCEMENT
+				-- Commented out bg enforcement
 				-- if filetype == "dashboard" then
 				--     vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
 				-- end
@@ -122,7 +122,7 @@ return {
           "",
 				},
 
-				-- Disable week header for better performance
+				-- Disable week header
 				week_header = {
 					enable = false,
 				},
@@ -179,7 +179,7 @@ return {
 					    icon_hl = "DashboardIcon",
 					    desc = "Projects",
 					    desc_hl = "DashboardDesc",
-					    key = "p",
+					    key = "º", -- Used to be "p" but there was a bug where it was overriting paste
 					    key_hl = "DashboardKey",
 					    action = "Telescope projects",
 					},

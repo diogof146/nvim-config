@@ -26,9 +26,6 @@ return {
 			},
 		})
 
-		-- Import core LSP configuration
-		local lspconfig = require("lspconfig")
-
 		-- Create a global variable to track diagnostics state
 		if vim.g.diagnostics_visible == nil then
 			vim.g.diagnostics_visible = false
@@ -87,10 +84,10 @@ return {
 					vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }), { bufnr = bufnr })
 				end, "Toggle Inlay Hints")
 			end
-    end
+		end
 
 		-- Configuration for Python LSP (Pyright)
-		lspconfig.pyright.setup({
+		vim.lsp.config("pyright", {
 			on_attach = on_attach,
 			capabilities = capabilities,
 			settings = {
@@ -108,9 +105,10 @@ return {
 				},
 			},
 		})
+		vim.lsp.enable("pyright")
 
 		-- Configuration for Python Linter (using Ruff as LSP)
-		lspconfig.ruff.setup({
+		vim.lsp.config("ruff", {
 			on_attach = on_attach,
 			capabilities = capabilities,
 			settings = {
@@ -118,9 +116,10 @@ return {
 				args = { "--line-length=500" }, -- Set custom line length for linting
 			},
 		})
+		vim.lsp.enable("ruff")
 
 		-- TypeScript/JavaScript LSP configuration (using tsserver)
-		lspconfig.ts_ls.setup({
+		vim.lsp.config("ts_ls", {
 			on_attach = on_attach,
 			capabilities = capabilities,
 			settings = {
@@ -148,9 +147,10 @@ return {
 				},
 			},
 		})
+		vim.lsp.enable("ts_ls")
 
 		-- Configuration for C/C++ LSP (Clangd)
-		lspconfig.clangd.setup({
+		vim.lsp.config("clangd", {
 			on_attach = on_attach,
 			capabilities = capabilities,
 			cmd = {
@@ -179,9 +179,10 @@ return {
 				},
 			},
 		})
+		vim.lsp.enable("clangd")
 
 		-- HTML Language Server configuration
-		lspconfig.html.setup({
+		vim.lsp.config("html", {
 			on_attach = on_attach,
 			capabilities = capabilities,
 			settings = {
@@ -201,9 +202,10 @@ return {
 				},
 			},
 		})
+		vim.lsp.enable("html")
 
 		-- CSS Language Server configuration
-		lspconfig.cssls.setup({
+		vim.lsp.config("cssls", {
 			on_attach = on_attach,
 			capabilities = capabilities,
 			settings = {
@@ -227,9 +229,10 @@ return {
 				},
 			},
 		})
+		vim.lsp.enable("cssls")
 
 		-- Emmet Language Server configuration for HTML/CSS abbreviations
-		lspconfig.emmet_ls.setup({
+		vim.lsp.config("emmet_ls", {
 			on_attach = on_attach,
 			capabilities = capabilities,
 			filetypes = {
@@ -258,12 +261,14 @@ return {
 				},
 			},
 		})
+		vim.lsp.enable("emmet_ls")
 
 		-- Swift Language Server configuration
-		lspconfig.sourcekit.setup({
+		vim.lsp.config("sourcekit", {
 			on_attach = on_attach,
 			capabilities = capabilities,
 			cmd = { "sourcekit-lsp" }, -- Swift LSP command
 		})
+		vim.lsp.enable("sourcekit")
 	end,
 }

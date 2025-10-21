@@ -1,7 +1,7 @@
 -- Autocompletion Plugin for Neovim
 
 return {
-	"hrsh7th/nvim-cmp", -- Plugin repository (GitHub: hrsh7th/nvim-cmp)
+	"hrsh7th/nvim-cmp",
 
 	-- Define plugin dependencies
 	dependencies = {

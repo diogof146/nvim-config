@@ -33,7 +33,7 @@ return {
 
 		require("noice").setup({
 			routes = {
-				-- Skip search_count messages entirely
+				-- Skip search_count messages
 				{
 					filter = { event = "msg_show", kind = { "search_count" } },
 					opts = { skip = true },

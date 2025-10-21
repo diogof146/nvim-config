@@ -1,5 +1,5 @@
 -- Xcode Build Integration for iOS/macOS Development
--- This plugin provides comprehensive Xcode project management within Neovim,
+-- This plugin provides Xcode project management within Neovim,
 -- including building, running, testing, and debugging capabilities.
 
 return {

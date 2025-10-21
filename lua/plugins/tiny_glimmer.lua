@@ -3,7 +3,6 @@ return {
 	event = "VeryLazy",
 	config = function()
 		require("tiny-glimmer").setup({
-			-- Master switch for the whole plugin
 			enabled = true,
 			-- Default animation style when none is specified
 			default_animation = "fade",

@@ -1,7 +1,7 @@
 -- Fuzzy Finder and Search for Neovim
 
 return {
-	"nvim-telescope/telescope.nvim", -- Plugin repository (GitHub: nvim-telescope/telescope.nvim)
+	"nvim-telescope/telescope.nvim", -- Plugin repository
 	branch = "0.1.x", -- Specify to use the stable branch for reliability and compatibility
 	dependencies = {
 		"nvim-lua/plenary.nvim", -- Required for async operations and utility functions

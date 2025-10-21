@@ -4,9 +4,7 @@
 return {
   "lervag/vimtex",
 
-  -- Set lazy=false to ensure VimTeX loads immediately when Neovim starts
-  -- This is important for LaTeX files to have all features available immediately
-  lazy = false,
+  lazy = true,
 
   -- ft = {"tex", "latex"} can be used instead of lazy=false if you want to load only for TeX files
   -- but some features might not work correctly with lazy loading
