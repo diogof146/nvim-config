@@ -4,7 +4,7 @@
 return {
   "lervag/vimtex",
 
-  lazy = true,
+  lazy = false,
 
   -- ft = {"tex", "latex"} can be used instead of lazy=false if you want to load only for TeX files
   -- but some features might not work correctly with lazy loading
