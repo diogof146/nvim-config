@@ -1,0 +1,31 @@
+-- -- Pyright: Python Language Server
+--
+-- return {
+-- 	cmd = { "pyright-langserver", "--stdio" },
+-- 	filetypes = { "python" },
+-- 	root_markers = { "pyproject.toml", "setup.py", "requirements.txt", ".git" },
+--
+-- 	settings = {
+-- 		python = {
+-- 			analysis = {
+-- 				-- Automatically detect Python import paths
+-- 				autoSearchPaths = true,
+--
+-- 				-- Analyze entire workspace instead of just open files
+-- 				diagnosticMode = "workspace",
+--
+-- 				-- Use library source code for better type inference
+-- 				useLibraryCodeForTypes = true,
+--
+-- 				-- Type checking strictness: "off", "basic", or "strict"
+-- 				typeCheckingMode = "basic",
+--
+-- 				-- Customize severity of specific type issues
+-- 				diagnosticSeverityOverrides = {
+-- 					reportGeneralTypeIssues = "error",
+-- 					reportOptionalMemberAccess = "warning",
+-- 				},
+-- 			},
+-- 		},
+-- 	},
+-- }

@@ -23,6 +23,13 @@ return {
 				"java",
 				"lua",
 				"r",
+				"c",
+				"bash",
+				"json",
+				"tsx",
+				"yaml",
+				"markdown",
+				"toml",
 			},
 			-- Enable syntax highlighting via Treesitter.
 			highlight = { enable = true },

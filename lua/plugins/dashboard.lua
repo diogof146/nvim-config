@@ -29,7 +29,7 @@ return {
 				vim.opt_local.bufhidden = "wipe" -- Automatically remove buffer when hidden
 				vim.opt_local.guicursor = "a:block-Cursor/lCursor-blinkon0" -- Hide cursor in dashboard
 				vim.cmd([[highlight Cursor blend=100]]) -- Make the cursor transparent
-				
+
 				-- Commented out black bg settings in case I need it again
 				-- vim.cmd([[highlight DashboardNormal guibg=#000000 ctermbg=0]])
 				-- vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
@@ -43,18 +43,16 @@ return {
 				if vim.bo.filetype == "dashboard" then
 					vim.opt_local.guicursor = "a:block-Cursor/lCursor-blinkon0"
 					vim.cmd([[highlight Cursor blend=100]])
-					
+
 					-- Commented out black bg
 					-- vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
-
 				else
 					vim.opt.guicursor = original_guicursor
 					vim.cmd([[highlight Cursor blend=0]])
-					
+
 					-- Commented out bg restoration
 					-- vim.api.nvim_set_hl(0, "Normal", { bg = nil })
 				end
-
 			end,
 		})
 
@@ -70,17 +68,15 @@ return {
 				if filetype ~= "dashboard" and filename ~= "" then
 					vim.opt.guicursor = original_guicursor
 					vim.cmd([[highlight Cursor blend=0]])
-					
+
 					-- Commented out bg restoration
 					-- vim.api.nvim_set_hl(0, "Normal", { bg = nil })
-
 				end
 
 				-- Commented out bg enforcement
 				-- if filetype == "dashboard" then
 				--     vim.api.nvim_set_hl(0, "Normal", { bg = "#000000" })
 				-- end
-
 			end,
 		})
 
@@ -93,7 +89,7 @@ return {
 			-- Main Dashboard Configuration
 			config = {
 				header = {
-          "",
+					"",
 					"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⣷⣤⠀⠀⠀⠀⠀⠀⠀⡀⠀⣀⣀⣴⣶⠞⠁⣀⣤⠤⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
 					"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣾⠿⣿⣿⡯⠀⠀⠀⠀⠀⢀⣴⣿⣿⣿⣿⣿⣧⣤⣾⣿⣁⣀⠀⠀⠀⢀⣀⣤⣤⣄⠀⠀⠀⠀⠀⠀",
 					"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⡏⠁⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⠀⠀⣰⣾⣿⣿⣿⣿⣿⣿⡆⠀⠀⠀⠀",
@@ -119,7 +115,7 @@ return {
 					"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠙⢿⣿⣿⣿⣿⣷⣶⣶⣿⠟⠁⠀⠀⠀⠀⠀⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
 					"",
 					"",
-          "",
+					"",
 				},
 
 				-- Disable week header
@@ -175,13 +171,13 @@ return {
 						action = "Lazy",
 					},
 					{
-					    icon = " ",
-					    icon_hl = "DashboardIcon",
-					    desc = "Projects",
-					    desc_hl = "DashboardDesc",
-					    key = "º", -- Used to be "p" but there was a bug where it was overriting paste
-					    key_hl = "DashboardKey",
-					    action = "Telescope projects",
+						icon = " ",
+						icon_hl = "DashboardIcon",
+						desc = "Projects",
+						desc_hl = "DashboardDesc",
+						key = "º", -- Used to be "p" but there was a bug where it was overriting paste
+						key_hl = "DashboardKey",
+						action = "Telescope projects",
 					},
 					{
 						icon = " ",

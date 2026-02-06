@@ -47,7 +47,8 @@ function M.setup()
 		bg_dark = "NONE",
 		bg_warning = "#102147",
 		bg_error = "#2b1211",
-		cursor_line = "#0b3135",
+		cursor_line = "#052459",
+		-- cursor_line = "#0b3135",
 		
 		-- Foreground colors
 		fg = "#B0B0B0",
