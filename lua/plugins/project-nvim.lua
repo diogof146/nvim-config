@@ -1,44 +1,74 @@
+-- Project Management Configuration
+
 return {
 	"ahmedkhalf/project.nvim",
 	config = function()
 		require("project_nvim").setup({
-				-- Manual mode doesn't automatically change the root directory
-				manual_mode = true,
-
-				-- Methods of detecting the root directory. **"lsp"** uses the native neovim
-				-- lsp, while **"pattern"** uses vim-rooter like glob pattern matching. Here
-				-- order matters: if one is not detected, the other is used as fallback.
-				detection_methods = { "lsp", "pattern" },
-
-				-- All the patterns used to detect root dir, when **"pattern"** is in
-				-- detection_methods
-				patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json", "pom.xml" },
-
-				-- Table of lsp clients to ignore by name
-				-- eg: { "efm", ... }
-				ignore_lsp = {},
-
-				-- Don't calculate root dir on specific directories
-				-- Ex: { "~/.cargo/*", ... }
-				exclude_dirs = {},
-
-				-- Show hidden files in telescope
-				show_hidden = false,
-
-				-- When set to false, you will get a message when project.nvim changes your
-				-- directory.
-				silent_chdir = false,
-
-				-- What scope to change the directory, valid options are
-				-- * global (default)
-				-- * tab
-				-- * win
-				scope_chdir = "tab",
-
-				-- Path where project.nvim will store the project history for use in
-				-- telescope
-				datapath = vim.fn.stdpath("data"),
+			manual_mode = true, -- Only add projects when explicitly told
+			detection_methods = { "lsp", "pattern" },
+			patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json", "pom.xml" },
+			ignore_lsp = {},
+			exclude_dirs = {},
+			show_hidden = false,
+			silent_chdir = false,
+			scope_chdir = "tab",
+			datapath = vim.fn.stdpath("data"),
 		})
+
 		require("telescope").load_extension("projects")
+
+		-- Native method to find project root
+		local function get_git_root()
+			local current_file = vim.api.nvim_buf_get_name(0)
+			local current_dir
+
+			if current_file == "" then
+				current_dir = vim.fn.getcwd()
+			else
+				current_dir = vim.fn.fnamemodify(current_file, ":h")
+			end
+
+			-- Look for root markers upwards from the current file
+			local root_file = vim.fs.find({ ".git", "pom.xml", "package.json", "Makefile" }, {
+				path = current_dir,
+				upward = true,
+				stop = vim.loop.os_homedir(),
+			})[1]
+
+			if root_file then
+				-- Return the folder containing the marker
+				return vim.fn.fnamemodify(root_file, ":h")
+			end
+
+			return nil
+		end
+
+		-- <localleader>pa - Add the project
+		vim.keymap.set("n", "<localleader>pa", function()
+			local root = get_git_root()
+
+			if not root then
+				vim.notify("No project root found (no .git/pom.xml/etc)", vim.log.levels.WARN)
+				return
+			end
+
+			local history_module = require("project_nvim.utils.history")
+			local history = history_module.recent_projects
+
+			-- Check duplicates
+			for _, p in ipairs(history) do
+				if p == root then
+					vim.notify("Project already exists: " .. root, vim.log.levels.INFO)
+					return
+				end
+			end
+
+			-- Add to memory and sync to disk
+			table.insert(history, 1, root)
+			history_module.recent_projects = history
+			history_module.write_projects_to_history()
+
+			vim.notify("Added project: " .. root, vim.log.levels.INFO)
+		end, { noremap = true, silent = true, desc = "Add Project Root" })
 	end,
 }
