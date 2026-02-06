@@ -12,13 +12,13 @@ return {
 			overwrite = {
 				-- Use plugin's default key mappings when true
 				auto_map = true,
-        -- Search operation settings
-        search = {
-            enabled = false,
-            default_animation = "bounce",
-            next_mapping = 'nzzzv', 
-            prev_mapping = 'Nzzzv', 
-        },
+				-- Search operation settings
+				search = {
+					enabled = false,
+					default_animation = "bounce",
+					next_mapping = "nzzzv",
+					prev_mapping = "Nzzzv",
+				},
 				-- Paste operation settings
 				paste = {
 					enabled = true,
