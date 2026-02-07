@@ -9,6 +9,13 @@ return {
 
 	config = function()
 		require("nvim-ts-autotag").setup({
+			-- Options
+			opts = {
+				enable_close = true, -- Auto close tags
+				enable_rename = true, -- Auto rename pairs of tags
+				enable_close_on_slash = false, -- Don't auto-close on trailing </
+			},
+
 			-- Filetypes to enable auto-tag
 			filetypes = {
 				"html",
