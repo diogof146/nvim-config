@@ -99,14 +99,20 @@ return {
 		-- Functions / Methods
 		map("n", "<Leader>jf", "@function.outer", "Next function start", ts_move)
 		map("n", "<Leader>kf", "@function.outer", "Previous function start", ts_move)
+		map("n", "<Leader>jF", "@function.outer", "Next function end", ts_move)
+		map("n", "<Leader>kF", "@function.outer", "Previous function end", ts_move)
 
 		-- Conditionals (if/else/switch)
 		map("n", "<Leader>jc", "@conditional.outer", "Next conditional start", ts_move)
 		map("n", "<Leader>kc", "@conditional.outer", "Previous conditional start", ts_move)
+		map("n", "<Leader>jC", "@conditional.outer", "Next conditional end", ts_move)
+		map("n", "<Leader>kC", "@conditional.outer", "Previous conditional end", ts_move)
 
 		-- Loops (for/while)
 		map("n", "<Leader>jl", "@loop.outer", "Next loop start", ts_move)
 		map("n", "<Leader>kl", "@loop.outer", "Previous loop start", ts_move)
+		map("n", "<Leader>jL", "@loop.outer", "Next loop end", ts_move)
+		map("n", "<Leader>kL", "@loop.outer", "Previous loop end", ts_move)
 
 		-- Parameters/Arguments
 		map("n", "<Leader>ja", "@parameter.inner", "Next parameter start", ts_move)
@@ -115,5 +121,7 @@ return {
 		-- Return statements
 		map("n", "<Leader>jr", "@return.outer", "Next return start", ts_move)
 		map("n", "<Leader>kr", "@return.outer", "Previous return start", ts_move)
+		map("n", "<Leader>jR", "@return.outer", "Next return end", ts_move)
+		map("n", "<Leader>kR", "@return.outer", "Previous return end", ts_move)
 	end,
 }
