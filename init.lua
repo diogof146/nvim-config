@@ -21,8 +21,6 @@ end
 -- Add Lazy.nvim to the runtime path, making it available for Neovim to use
 vim.opt.rtp:prepend(lazypath)
 
-
-
 -- Key Mappings Configuration
 
 -- Define the "leader key" as space
@@ -66,10 +64,15 @@ vim.api.nvim_create_user_command("WQa", "wqa", { bang = true })
 vim.api.nvim_create_user_command("WQA", "wqa", { bang = true })
 
 -- Mapping global word replacement with confirmation
-vim.keymap.set('n', '<leader>r', ':%s/\\<<C-r><C-w>\\>//gc<left><left><left>', { noremap = true })
+vim.keymap.set("n", "<leader>r", ":%s/\\<<C-r><C-w>\\>//gc<left><left><left>", { noremap = true })
 
 -- Mapping spell check with input spelllang
-vim.keymap.set('n', '<localleader>s', ':execute "setlocal spell spelllang=" . input("Enter spelllang: ")<CR>', { noremap = true, silent = true })
+vim.keymap.set(
+	"n",
+	"<localleader>s",
+	':execute "setlocal spell spelllang=" . input("Enter spelllang: ")<CR>',
+	{ noremap = true, silent = true }
+)
 
 -- Make delete operations not affect the clipboard
 -- The "void register" (_) is used to discard deleted text
@@ -80,14 +83,21 @@ vim.keymap.set("n", "S", '"_cc', { noremap = true, desc = "Substitute line witho
 vim.keymap.set("n", "C", '"_C', { noremap = true, desc = "Change to end without yanking" })
 vim.keymap.set("n", "s", '"_s', { noremap = true, desc = "Substitute character without yanking" })
 
+-- Random cmds
 
 -- Disabling comment auto insert
 vim.api.nvim_create_autocmd("BufEnter", {
-    callback = function()
-        vim.opt.formatoptions:remove("o")
-    end
+	callback = function()
+		vim.opt.formatoptions:remove("o")
+	end,
 })
 
+-- Cwd save for Ghostty cmd
+vim.api.nvim_create_autocmd("VimLeave", {
+	callback = function()
+		vim.fn.writefile({ vim.fn.getcwd() }, "/tmp/last_ghostty_cwd")
+	end,
+})
 
 -- Core Editor Settings
 
@@ -121,10 +131,8 @@ for k, v in pairs(options) do
 	vim.opt[k] = v -- Set each option using vim.opt
 end
 
-
-
 -- Plugin Initialization with Lazy.nvim
 require("lazy").setup("plugins", {
-  change_detection = { enabled = false },
-  checker = { enabled = false },
+	change_detection = { enabled = false },
+	checker = { enabled = false },
 })

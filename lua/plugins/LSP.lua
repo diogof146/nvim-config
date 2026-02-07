@@ -2,11 +2,9 @@
 
 return {
 	"hrsh7th/cmp-nvim-lsp",
+
 	config = function()
-		-- ============================================================================
 		-- DIAGNOSTICS SETUP
-		-- ============================================================================
-		-- Initialize diagnostics visibility state
 		if vim.g.diagnostics_visible == nil then
 			vim.g.diagnostics_visible = false
 		end
@@ -31,24 +29,15 @@ return {
 			setup_diagnostics(vim.g.diagnostics_visible)
 		end, { desc = "Toggle diagnostics" })
 
-		-- ============================================================================
-		-- LSP CAPABILITIES
-		-- ============================================================================
 		-- Extend base capabilities with nvim-cmp features for better completions
 		local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-		-- ============================================================================
-		-- GLOBAL LSP CONFIGURATION
-		-- ============================================================================
 		-- Default settings for all LSP servers
 		vim.lsp.config("*", {
 			root_markers = { ".git", ".project" },
 			capabilities = capabilities,
 		})
 
-		-- ============================================================================
-		-- LSPATTACH AUTOCMD
-		-- ============================================================================
 		vim.api.nvim_create_autocmd("LspAttach", {
 			callback = function(args)
 				local bufnr = args.buf
@@ -118,20 +107,25 @@ return {
 			end,
 		})
 
-		-- ============================================================================
-		-- ENABLE LSP SERVERS
-		-- ============================================================================
 		-- Server configs are loaded from ~/.config/nvim/lsp/<server_name>.lua
 		vim.lsp.enable({
-			"basedpyright",
-			"ruff",
-			"ts_ls",
-			"clangd",
-			"html",
-			"cssls",
-			"emmet_ls",
-			"sourcekit",
-			"lua_ls",
+			"basedpyright", -- Python type checker
+			"ruff", -- Python linter/formatter
+			"ts_ls", -- TypeScript/JavaScript
+			"clangd", -- C/C++
+			"omnisharp", -- C#
+			"lua_ls", -- Lua
+			"sourcekit", -- Swift
+			"bashls", -- Bash/Shell
+			"html", -- HTML
+			"cssls", -- CSS/SCSS/Less
+			"emmet_ls", -- HTML/CSS abbreviations
+			"tailwindcss", -- Tailwind CSS
+			"jsonls", -- JSON
+			"yamlls", -- YAML
+			"taplo", -- TOML
+			"lemminx", -- XML
+			"marksman", -- Markdown
 		})
 	end,
 }
