@@ -74,8 +74,8 @@ return {
 				map("n", "<leader>dg", vim.diagnostic.open_float, "Show Diagnostic")
 
 				-- Jump to next/previous diagnostic
-				map("n", "]d", vim.diagnostic.goto_next, "Next Diagnostic")
-				map("n", "[d", vim.diagnostic.goto_prev, "Previous Diagnostic")
+				map("n", "<Leader>jd", vim.diagnostic.goto_next, "Next Diagnostic")
+				map("n", "<Leader>kd", vim.diagnostic.goto_prev, "Previous Diagnostic")
 
 				-- Show all diagnostics in location list
 				map("n", "<leader>dq", vim.diagnostic.setloclist, "Diagnostics to Location List")

@@ -160,26 +160,6 @@ return {
 						["ot"] = { "order_by_type", nowait = false },
 					},
 				},
-
-				-- Commands for filesystem
-				commands = {
-					-- Custom command to refresh and reveal current file
-					reveal_current_file = function(state)
-						local node = state.tree:get_node()
-						if node.type == "message" then
-							return
-						end
-						local current_file = vim.fn.expand("%:p")
-						if current_file and current_file ~= "" then
-							require("neo-tree.command").execute({
-								action = "focus",
-								source = "filesystem",
-								position = "left",
-								reveal_file = current_file,
-							})
-						end
-					end,
-				},
 			},
 
 			-- Buffers configuration

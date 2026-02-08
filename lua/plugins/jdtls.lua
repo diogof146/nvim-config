@@ -14,9 +14,7 @@ return {
 			old_notify(msg, level, opts)
 		end
 
-		-- ========================================================================
-		-- JDTLS SETUP FUNCTION
-		-- ========================================================================
+		-- Setup
 		local function setup_jdtls()
 			-- Find project root directory
 			local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle" }
@@ -121,6 +119,18 @@ return {
 						signatureHelp = { enabled = true },
 						contentProvider = { preferred = "fernflower" }, -- Decompiler
 
+						inlayHints = {
+							parameterNames = {
+								enabled = "all", -- Show parameter names
+							},
+						},
+
+						compile = {
+							nullAnalysis = {
+								mode = "automatic",
+							},
+						},
+
 						completion = {
 							favoriteStaticMembers = {
 								"org.junit.Assert.*",
@@ -137,8 +147,14 @@ return {
 								"jdk.*",
 								"sun.*",
 							},
+							chain = {
+								enabled = true,
+							},
 							importOrder = { "java", "javax", "com", "org", "net" },
+							matchCase = "firstLetter",
 						},
+
+						autobuild = { enabled = true },
 
 						sources = {
 							organizeImports = {
