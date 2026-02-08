@@ -120,3 +120,21 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 		vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
 	end,
 })
+
+-- Make 'c' yank to system clipboard and delete without entering insert mode
+_G.ChangeNoInsert = function()
+	vim.cmd('normal! `[v`]"+y')
+	vim.cmd("normal! gvd")
+end
+
+vim.keymap.set("n", "c", function()
+	vim.o.operatorfunc = "v:lua.ChangeNoInsert"
+	return "g@"
+end, { expr = true, silent = true })
+vim.keymap.set("n", "cc", function()
+	local count = vim.v.count1
+	vim.cmd('normal! "+y' .. count .. "y")
+	vim.cmd("normal! " .. count .. "dd")
+end, { silent = true })
+vim.keymap.set("n", "C", '"+y$d$', { silent = true })
+vim.keymap.set("x", "c", '"+ygvd', { silent = true })

@@ -89,37 +89,10 @@ return {
 			formatting = {
 				fields = { "kind", "abbr", "menu" },
 				format = function(entry, vim_item)
-					-- Kind icons
-					local kind_icons = {
-						Text = "󰉿",
-						Method = "󰆧",
-						Function = "󰊕",
-						Constructor = "",
-						Field = "󰜢",
-						Variable = "󰀫",
-						Class = "󰠱",
-						Interface = "",
-						Module = "",
-						Property = "󰜢",
-						Unit = "󰑭",
-						Value = "󰎠",
-						Enum = "",
-						Keyword = "󰌋",
-						Snippet = "",
-						Color = "󰏤",
-						File = "󰈙",
-						Reference = "󰈇",
-						Folder = "󰉋",
-						EnumMember = "",
-						Constant = "󰏿",
-						Struct = "󰙅",
-						Event = "",
-						Operator = "󰆕",
-						TypeParameter = "",
-					}
+					local icon, hl, is_default = require("mini.icons").get("lsp", vim_item.kind)
 
-					-- Add icon
-					vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind] or "", vim_item.kind)
+					vim_item.kind = icon .. " " .. vim_item.kind
+					vim_item.kind_hl_group = hl
 
 					-- Add source label
 					vim_item.menu = ({

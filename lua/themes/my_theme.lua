@@ -268,6 +268,9 @@ local theme = lush(function(injected_functions)
 		XcodebuildTestExplorerTestDisabled({ Comment }), -- XcodebuildTestExplorerTestDisabled xxx links to Comment
 		NotifyLogTime({ Comment }), -- NotifyLogTime  xxx links to Comment
 		luaComment({ Comment }), -- luaComment     xxx links to Comment
+		CodeDiffCharInsert({}),
+		CodeDiffLineInsert({}),
+		NeoTreeGitUntracked({ fg = hsl("#9E5676") }),
 		sym("@spell")({ fg = "#93C9C5" }), -- @variable      xxx guifg=NvimLightGrey2
 		sym("@variable")({ fg = "#B4E6ED" }), -- @variable      xxx guifg=NvimLightGrey2
 		sym("@lsp.type.variable")({ sym("@variable") }), -- @lsp.type.variable xxx links to @variable

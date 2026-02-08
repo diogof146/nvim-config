@@ -151,11 +151,7 @@ return {
 			"gc",
 			function()
 				-- Preserve cursor position
-				local pos = vim.fn.getpos(".")
-				vim.schedule(function()
-					vim.fn.setpos(".", pos)
-				end)
-				return require("undo-glow").comment({
+				require("undo-glow").comment({
 					animation = {
 						animation_type = "desaturate",
 					},

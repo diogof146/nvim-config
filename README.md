@@ -16,30 +16,40 @@ My personalized Neovim configuration. This repository is actively maintained and
 - [nvim-cmp](https://github.com/hrsh7th/nvim-cmp) - Completion engine
 - [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) - Syntax highlighting
 - [none-ls.nvim](https://github.com/nvimtools/none-ls.nvim) - Additional linting/formatting
-- [vim-fugitive](https://github.com/tpope/vim-fugitive) - Git operations
-- [undotree](https://github.com/mbbill/undotree) - Visual undo history
 - [dashboard-nvim](https://github.com/nvimdev/dashboard-nvim) - Start screen
 - [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) - Status line
 - [neo-tree.nvim](https://github.com/nvim-neo-tree/neo-tree.nvim) - File explorer
 - [bufferline.nvim](https://github.com/akinsho/bufferline.nvim) - Buffer line
-- [tiny-glimmer.nvim](https://github.com/link/to/tiny-glimmer) - Visual cue on yank/paste/undo/redo/search 
 - [toggleterm.nvim](https://github.com/akinsho/toggleterm.nvim) - Terminal
 - [nvim-autopairs](https://github.com/windwp/nvim-autopairs) - Auto-close pairs
-- [Comment.nvim](https://github.com/numToStr/Comment.nvim) - Code commenting
 - [nvim-dap](https://github.com/mfussenegger/nvim-dap) - Debugging
-- [live-preview.nvim](https://github.com/link/to/live-preview) - Markdown/HTML preview
 - [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) - Fuzzy finder
 - [leap.nvim](https://github.com/ggandor/leap.nvim) - Leap
 - [nvim-surround](https://github.com/kylechui/nvim-surround) - Surround selection
 - [nvim-jdtls](https://github.com/mfussenegger/nvim-jdtls) - Java LSP
-- [VimTeX](https://github.com/lervag/vimtex) - LaTeX syntax 
+- [VimTeX](https://github.com/lervag/vimtex) - LaTeX syntax
 - [mini.move](https://github.com/echasnovski/mini.move) - Line/Selection Moving
 - [neogen](https://github.com/danymat/neogen) - Annotation Toolkit
-- [java-project-creator](https://github.com/diogof146/java-project-creator.nvim) - Creating Java and Maven projects
-- [smear-cursor.nvim](https://github.com/sphamba/smear-cursor.nvim) - Smear cursor animation
 - [noice.nvim](https://github.com/folke/noice.nvim) - Better notifications
 - [neoscroll](https://github.com/karb94/neoscroll.nvim) - Fast scrolling
-<!-- - [garbage-day.nvim](https://github.com/Zeioth/garbage-day.nvim) - Garbage collector for LSP-->
+- [mini.icons](https://github.com/echasnovski/mini.icons) - Icon provider
+- [codediff.nvim](https://github.com/esmellert/codediff.nvim) - Side-by-side diff view
+- [git-conflict.nvim](https://github.com/akinsho/git-conflict.nvim) - Merge conflict resolution
+- [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) - Git decorations
+- [lazydev.nvim](https://github.com/folke/lazydev.nvim) - Lua development setup
+- [lush.nvim](https://github.com/rktjmp/lush.nvim) - Colorscheme creation toolkit
+- [nvim-colorizer.lua](https://github.com/NvChad/nvim-colorizer.lua) - Color highlighter
+- [project.nvim](https://github.com/ahmedkhalf/project.nvim) - Project root detection
+- [rainbow-delimiters.nvim](https://github.com/HiPhish/rainbow-delimiters.nvim) - Rainbow parentheses
+- [recover.nvim](https://github.com/lucidph34r/recover.nvim) - Swap file management
+- [substitute.nvim](https://github.com/gbprod/substitute.nvim) - Substitution/exchange operators
+- [tiny-inline-diagnostics.nvim](https://github.com/rachartier/tiny-inline-diagnostics.nvim) - Inline LSP diagnostics
+- [nvim-ts-autotag](https://github.com/windwp/nvim-ts-autotag) - Auto-close HTML/XML tags
+- [nvim-treesitter-context](https://github.com/nvim-treesitter/nvim-treesitter-context) - Sticky code headers
+- [nvim-ts-endwise](https://github.com/RRethy/nvim-ts-endwise) - Auto-add "end" via Treesitter
+- [nvim-treesitter-textobjects](https://github.com/nvim-treesitter/nvim-treesitter-textobjects) - Syntax-aware text objects
+- [undo-glow.nvim](https://github.com/yioneko/undo-glow.nvim) - Visual feedback for actions
+- [xcodebuild.nvim](https://github.com/wojciech-kulik/xcodebuild.nvim) - Xcode integration
 
 ## Installation
 
