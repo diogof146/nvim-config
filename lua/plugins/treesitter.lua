@@ -9,12 +9,14 @@ return {
 
 	config = function()
 		require("nvim-treesitter.configs").setup({
+			-- Parsers to auto-install
 			ensure_installed = {
 				"python",
 				"java",
 				"lua",
 				"c",
 				"cpp",
+				"c_sharp", -- For C# (omnisharp)
 				"bash",
 				"javascript",
 				"typescript",
@@ -26,7 +28,7 @@ return {
 				"toml",
 				"xml",
 				"markdown",
-				"r",
+				"swift",
 			},
 
 			-- Enable syntax highlighting
@@ -35,9 +37,12 @@ return {
 			-- Enable smart indentation
 			indent = { enable = true },
 
+			-- Enable Treesitter-based folding (optional - if you prefer this over your custom logic)
+			-- fold = { enable = true },
+
 			-- Auto-install missing parsers
 			auto_install = true,
-		}) -- This was missing
+		})
 
 		-- Custom fold text function to show function signatures
 		_G.custom_fold_text = function()
@@ -67,8 +72,9 @@ return {
 			return signature .. " ... [" .. lines_count .. " lines]"
 		end
 
-		-- Folding setup
-		vim.opt.foldmethod = "manual"
+		-- Folding options
+		vim.opt.foldmethod = "manual" -- Or "expr" if using Treesitter folding
+		-- vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"  -- Uncomment if using Treesitter folding
 		vim.opt.foldtext = "v:lua.custom_fold_text()"
 		vim.opt.foldlevel = 99
 		vim.opt.foldlevelstart = 99
@@ -207,7 +213,7 @@ return {
 			vim.api.nvim_win_set_cursor(0, cursor)
 		end
 
-		-- Folding keymaps
+		-- Folding Keymaps
 		vim.keymap.set(
 			"n",
 			"<leader>h",

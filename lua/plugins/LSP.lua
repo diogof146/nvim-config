@@ -1,10 +1,15 @@
 -- Language Server Protocol Configuration
+-- Handles LSP client setup, keybindings, and server initialization
 
 return {
 	"hrsh7th/cmp-nvim-lsp",
 
+	dependencies = {
+		"hrsh7th/nvim-cmp",
+	},
+
 	config = function()
-		-- DIAGNOSTICS SETUP
+		-- Initialize diagnostics visibility state
 		if vim.g.diagnostics_visible == nil then
 			vim.g.diagnostics_visible = false
 		end
@@ -12,11 +17,11 @@ return {
 		-- Configure diagnostic display settings
 		local function setup_diagnostics(enabled)
 			vim.diagnostic.config({
-				virtual_text = enabled,
-				signs = enabled,
-				underline = enabled,
-				update_in_insert = false,
-				severity_sort = false,
+				virtual_text = enabled, -- Show diagnostics as virtual text
+				signs = enabled, -- Show signs in the gutter
+				underline = enabled, -- Underline diagnostic regions
+				update_in_insert = false, -- Don't update while typing
+				severity_sort = false, -- Don't sort by severity
 			})
 		end
 
@@ -29,15 +34,48 @@ return {
 			setup_diagnostics(vim.g.diagnostics_visible)
 		end, { desc = "Toggle diagnostics" })
 
-		-- Extend base capabilities with nvim-cmp features for better completions
+		-- CAPABILITIES SETUP
+
+		-- Extend base LSP capabilities with nvim-cmp features for better completions
 		local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-		-- Default settings for all LSP servers
-		vim.lsp.config("*", {
-			root_markers = { ".git", ".project" },
-			capabilities = capabilities,
-		})
+		-- Map server names to their config file names in lua/lsp/
+		local server_configs = {
+			basedpyright = "basedpyright", -- Python type checker
+			ruff = "ruff", -- Python linter/formatter
+			ts_ls = "ts_ls", -- TypeScript/JavaScript
+			clangd = "clangd", -- C/C++
+			["csharp-ls"] = "csharp-ls", -- C#
+			lua_ls = "lua_ls", -- Lua
+			sourcekit = "sourcekit", -- Swift
+			bashls = "bashls", -- Bash/Shell
+			html = "html", -- HTML
+			cssls = "cssls", -- CSS/SCSS/Less
+			emmet_ls = "emmet_ls", -- HTML/CSS abbreviations
+			tailwindcss = "tailwindcss", -- Tailwind CSS
+			jsonls = "jsonls", -- JSON
+			yamlls = "yamlls", -- YAML
+			taplo = "taplo", -- TOML
+			lemminx = "lemminx", -- XML
+			marksman = "marksman", -- Markdown
+		}
 
+		-- Load individual server configs from ~/.config/nvim/lua/lsp/<server>.lua
+		for server_name, config_file in pairs(server_configs) do
+			local config_path = "lsp." .. config_file
+			local ok, server_config = pcall(require, config_path)
+
+			if ok then
+				-- Merge nvim-cmp capabilities with server config
+				server_config.capabilities = capabilities
+				vim.lsp.config(server_name, server_config)
+			else
+				-- Warn if config file is missing
+				vim.notify("Could not load LSP config for " .. server_name, vim.log.levels.WARN)
+			end
+		end
+
+		-- Sets up keybindings and features when LSP attaches to a buffer
 		vim.api.nvim_create_autocmd("LspAttach", {
 			callback = function(args)
 				local bufnr = args.buf
@@ -46,12 +84,12 @@ return {
 				-- Enable omnifunc completion
 				vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
 
-				-- Helper for buffer-local keymaps
+				-- Helper function for buffer-local keymaps
 				local function map(mode, key, func, desc)
 					vim.keymap.set(mode, key, func, { buffer = bufnr, desc = desc })
 				end
 
-				-- Navigation keybinds
+				-- Navigation Keybinds
 				map("n", "gd", vim.lsp.buf.definition, "Go to Definition")
 				map("n", "gD", vim.lsp.buf.declaration, "Go to Declaration")
 				map("n", "gt", vim.lsp.buf.type_definition, "Go to Type Definition")
@@ -60,34 +98,24 @@ return {
 
 				-- Documentation
 				map("n", "K", vim.lsp.buf.hover, "Show Documentation")
-
-				-- Code actions
-				map("n", "<leader>ca", vim.lsp.buf.code_action, "Code Action")
-
-				-- Document symbols (outline of current file)
-				map("n", "<leader>ds", vim.lsp.buf.document_symbol, "Document Symbols")
-
-				-- Workspace symbols (search symbols across project)
-				map("n", "<leader>ws", vim.lsp.buf.workspace_symbol, "Workspace Symbols")
-
-				-- Show diagnostic in floating window
-				map("n", "<leader>dg", vim.diagnostic.open_float, "Show Diagnostic")
-
-				-- Jump to next/previous diagnostic
-				map("n", "<Leader>jd", vim.diagnostic.goto_next, "Next Diagnostic")
-				map("n", "<Leader>kd", vim.diagnostic.goto_prev, "Previous Diagnostic")
-
-				-- Show all diagnostics in location list
-				map("n", "<leader>dq", vim.diagnostic.setloclist, "Diagnostics to Location List")
-
-				-- Signature help
 				map("n", "<C-h>", vim.lsp.buf.signature_help, "Signature Help")
 				map("i", "<C-h>", vim.lsp.buf.signature_help, "Signature Help")
 
-				-- Rename symbol across all files
+				-- Code Actions & Refactoring
+				map("n", "<leader>ca", vim.lsp.buf.code_action, "Code Action")
 				map("n", "<localleader>r", vim.lsp.buf.rename, "Rename Symbol")
 
-				-- Format on save
+				-- Symbols & Workspace
+				map("n", "<leader>ds", vim.lsp.buf.document_symbol, "Document Symbols")
+				map("n", "<leader>ws", vim.lsp.buf.workspace_symbol, "Workspace Symbols")
+
+				-- Diagnostics
+				map("n", "<leader>dg", vim.diagnostic.open_float, "Show Diagnostic")
+				map("n", "<Leader>jd", vim.diagnostic.goto_next, "Next Diagnostic")
+				map("n", "<Leader>kd", vim.diagnostic.goto_prev, "Previous Diagnostic")
+				map("n", "<leader>dq", vim.diagnostic.setloclist, "Diagnostics to Location List")
+
+				-- Format on Save
 				if client.server_capabilities.documentFormattingProvider then
 					vim.api.nvim_create_autocmd("BufWritePre", {
 						buffer = bufnr,
@@ -97,7 +125,7 @@ return {
 					})
 				end
 
-				-- Inlay hints toggle (if supported by server)
+				-- Inlay Hints Toggle (if supported by server)
 				if client.server_capabilities.inlayHintProvider then
 					map("n", "<leader>ih", function()
 						local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
@@ -107,25 +135,7 @@ return {
 			end,
 		})
 
-		-- Server configs are loaded from ~/.config/nvim/lsp/<server_name>.lua
-		vim.lsp.enable({
-			"basedpyright", -- Python type checker
-			"ruff", -- Python linter/formatter
-			"ts_ls", -- TypeScript/JavaScript
-			"clangd", -- C/C++
-			"omnisharp", -- C#
-			"lua_ls", -- Lua
-			"sourcekit", -- Swift
-			"bashls", -- Bash/Shell
-			"html", -- HTML
-			"cssls", -- CSS/SCSS/Less
-			"emmet_ls", -- HTML/CSS abbreviations
-			"tailwindcss", -- Tailwind CSS
-			"jsonls", -- JSON
-			"yamlls", -- YAML
-			"taplo", -- TOML
-			"lemminx", -- XML
-			"marksman", -- Markdown
-		})
+		-- Activates all configured language servers
+		vim.lsp.enable(vim.tbl_keys(server_configs))
 	end,
 }
