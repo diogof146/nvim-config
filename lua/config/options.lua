@@ -5,7 +5,7 @@
 vim.g.mapleader = " " -- Global leader key
 vim.g.maplocalleader = "," -- Local leader key
 
--- Define editor options in a table for better organization
+-- Define editor options
 local options = {
 	-- Display Configuration
 	number = true, -- Enable line numbers for the active buffer

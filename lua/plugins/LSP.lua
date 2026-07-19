@@ -45,7 +45,6 @@ return {
 			ruff = "ruff", -- Python linter/formatter
 			ts_ls = "ts_ls", -- TypeScript/JavaScript
 			clangd = "clangd", -- C/C++
-			["csharp-ls"] = "csharp-ls", -- C#
 			lua_ls = "lua_ls", -- Lua
 			sourcekit = "sourcekit", -- Swift
 			bashls = "bashls", -- Bash/Shell
@@ -57,6 +56,7 @@ return {
 			yamlls = "yamlls", -- YAML
 			taplo = "taplo", -- TOML
 			lemminx = "lemminx", -- XML
+			intelephense = "intelephense", -- PHP
 			marksman = "marksman", -- Markdown
 		}
 

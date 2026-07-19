@@ -106,11 +106,6 @@ return {
 				end,
 			},
 
-			-- Performance tuning
-			performance = {
-				max_view_entries = 20, -- Show max 20 items
-			},
-
 			-- Experimental features
 			experimental = {
 				ghost_text = true, -- Shows preview of completion in gray text

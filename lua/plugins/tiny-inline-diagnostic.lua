@@ -1,10 +1,11 @@
--- Inline LSP Diagnostics
+-- Inline LSP Diagnostics with Better Visual Formatting
 return {
 	"rachartier/tiny-inline-diagnostic.nvim",
 	event = "VeryLazy",
 	priority = 1000,
 	config = function()
 		require("tiny-inline-diagnostic").setup({
+
 			-- Preset style - available: "modern", "classic", "minimal", "powerline", "ghost", "simple", "nonerdfont", "amongus"
 			preset = "modern",
 
@@ -42,7 +43,7 @@ return {
 				-- Throttle updates (ms) - higher = less CPU, may feel less responsive
 				throttle = 20,
 
-				-- Minimum chars before wrapping
+				-- Minimum chars before wrapping (makes long messages readable)
 				softwrap = 30,
 
 				-- Diagnostic message display
@@ -55,11 +56,11 @@ return {
 
 				-- Multiline diagnostic support
 				multilines = {
-					enabled = false, -- Enable multiline diagnostics
-					always_show = false, -- Show on all lines
-					trim_whitespaces = false, -- Remove leading/trailing whitespace
-					tabstop = 4, -- Spaces per tab
-					severity = nil, -- Filter by severity
+					enabled = false,
+					always_show = false,
+					trim_whitespaces = false,
+					tabstop = 4,
+					severity = nil,
 				},
 
 				-- Show all diagnostics on cursor line (not just under cursor)
@@ -80,7 +81,7 @@ return {
 				-- Enable in select mode
 				enable_on_select = false,
 
-				-- Overflow handling
+				-- Overflow handling (wrap long messages)
 				overflow = {
 					mode = "wrap", -- "wrap", "none", "oneline"
 					padding = 0,
@@ -93,7 +94,6 @@ return {
 				},
 
 				-- Custom format function
-				-- format = function(diag) return diag.message end,
 				format = nil,
 
 				-- Virtual text priority
@@ -122,29 +122,41 @@ return {
 			},
 		})
 
-		-- Show diagnostics on all lines when enabled
+		-- Disable all diagnostics by default (both inline and gutter signs)
 		vim.diagnostic.config({
-			virtual_text = false, -- Disable default virtual text
+			virtual_text = false, -- Disable default virtual text (tiny-inline replaces this)
+			signs = false, -- Disable gutter signs by default
+			underline = false, -- Disable underlines by default
 		})
 
+		-- Disable tiny-inline-diagnostic by default
+		require("tiny-inline-diagnostic").disable()
+
+		-- Track state
 		local diagnostics_enabled = false
 
-		-- Toggle function using enable/disable
+		-- TOGGLE FUNCTION
 		local function toggle_diagnostics()
+			diagnostics_enabled = not diagnostics_enabled
+
 			if diagnostics_enabled then
-				require("tiny-inline-diagnostic").disable()
-				vim.diagnostic.config({ signs = false }) -- Hide number column signs
-				diagnostics_enabled = false
-				vim.notify("Inline diagnostics disabled", vim.log.levels.INFO)
-			else
+				-- Enable both inline diagnostics and gutter signs
 				require("tiny-inline-diagnostic").enable()
-				vim.diagnostic.config({ signs = true }) -- Show number column signs
-				diagnostics_enabled = true
-				vim.notify("Inline diagnostics enabled", vim.log.levels.INFO)
+				vim.diagnostic.config({
+					signs = true, -- Show error/warning signs in gutter (line numbers)
+					underline = true, -- Underline diagnostic regions
+				})
+			else
+				-- Disable both inline diagnostics and gutter signs
+				require("tiny-inline-diagnostic").disable()
+				vim.diagnostic.config({
+					signs = false, -- Hide gutter signs
+					underline = false, -- Hide underlines
+				})
 			end
 		end
 
-		-- Toggle keybinding
+		-- KEYBINDING
 		vim.keymap.set("n", "<leader>dt", toggle_diagnostics, { desc = "Toggle inline diagnostics" })
 	end,
 }

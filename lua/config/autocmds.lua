@@ -138,3 +138,12 @@ vim.keymap.set("n", "cc", function()
 end, { silent = true })
 vim.keymap.set("n", "C", '"+y$d$', { silent = true })
 vim.keymap.set("x", "c", '"+ygvd', { silent = true })
+
+-- Always register this nvim instance on the unity socket
+vim.defer_fn(function()
+	local socket = vim.fn.expand("~/.cache/nvimunity.sock")
+	if vim.fn.filereadable(socket) == 1 then
+		os.remove(socket)
+	end
+	pcall(vim.fn.serverstart, socket)
+end, 100)

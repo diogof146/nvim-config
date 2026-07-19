@@ -124,6 +124,7 @@ return {
 						"*.tmp", -- Temporary files
 						".DS_Store", -- macOS system files
 						"thumbs.db", -- Windows system files
+						"*.meta", -- Unity autogen files
 					},
 					always_show = {
 						".gitignore",
