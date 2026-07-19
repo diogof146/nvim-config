@@ -9,7 +9,7 @@ return {
 	},
 	opts = {
 		server = {
-			override = true, -- setup the server from the plugin if true
+			override = false, -- setup the server from the plugin if true
 			settings = { -- shortcut for `settings.tailwindCSS`
 				-- experimental = {
 				--   classRegex = { "tw\\('([^']*)'\\)" }
