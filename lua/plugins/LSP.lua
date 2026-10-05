@@ -37,7 +37,7 @@ return {
 		-- CAPABILITIES SETUP
 
 		-- Extend base LSP capabilities with nvim-cmp features for better completions
-		local capabilities = require("cmp_nvim_lsp").default_capabilities()
+		local capabilities = require("blink.cmp").get_lsp_capabilities()
 
 		-- Map server names to their config file names in lua/lsp/
 		local server_configs = {
